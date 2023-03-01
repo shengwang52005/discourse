@@ -296,7 +296,7 @@ class ColorScheme < ActiveRecord::Base
   end
 
   def self.hex_cache
-    @hex_cache ||= DistributedCache.new("scheme_hex_for_name")
+    @hex_cache ||= LiveCache.new("scheme_hex_for_name", 100)
   end
 
   attr_accessor :is_base
@@ -409,7 +409,7 @@ class ColorScheme < ActiveRecord::Base
   end
 
   def self.hex_for_name(name, scheme_id = nil)
-    hex_cache.defer_get_set(scheme_id ? name + "_#{scheme_id}" : name) do
+    hex_cache.getset(scheme_id ? name + "_#{scheme_id}" : name) do
       lookup_hex_for_name(name, scheme_id)
     end
   end

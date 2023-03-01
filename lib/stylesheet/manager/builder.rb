@@ -243,7 +243,7 @@ class Stylesheet::Manager::Builder
     categories_updated =
       Stylesheet::Manager
         .cache
-        .defer_get_set("categories_updated") do
+        .getset("categories_updated") do
           Category.where("uploaded_background_id IS NOT NULL").pluck(:updated_at).map(&:to_i).sum
         end
 

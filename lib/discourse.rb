@@ -763,7 +763,7 @@ module Discourse
 
   # Shared between processes
   def self.postgres_last_read_only
-    @postgres_last_read_only ||= DistributedCache.new("postgres_last_read_only")
+    @postgres_last_read_only ||= LiveCache.new("postgres_last_read_only", 1)
   end
 
   # Per-process
@@ -772,8 +772,7 @@ module Discourse
   end
 
   def self.postgres_recently_readonly?
-    seconds =
-      postgres_last_read_only.defer_get_set("timestamp") { redis.get(LAST_POSTGRES_READONLY_KEY) }
+    seconds = postgres_last_read_only.getset("timestamp") { redis.get(LAST_POSTGRES_READONLY_KEY) }
 
     seconds ? Time.zone.at(seconds.to_i) > 15.seconds.ago : false
   end

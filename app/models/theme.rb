@@ -14,7 +14,7 @@ class Theme < ActiveRecord::Base
   attr_accessor :child_components
 
   def self.cache
-    @cache ||= DistributedCache.new("theme:compiler:#{BASE_COMPILER_VERSION}")
+    @cache ||= LiveCache.new("theme:compiler:#{BASE_COMPILER_VERSION}", 10_000)
   end
 
   belongs_to :user
@@ -214,7 +214,7 @@ class Theme < ActiveRecord::Base
   end
 
   def self.get_set_cache(key, &blk)
-    cache.defer_get_set(key, &blk)
+    cache.getset(key, &blk)
   end
 
   def self.theme_ids
@@ -488,7 +488,7 @@ class Theme < ActiveRecord::Base
   end
 
   def self.theme_field_values(theme_ids, targets, names)
-    cache.defer_get_set_bulk(
+    cache.getset_bulk(
       Array(theme_ids).product(Array(targets), Array(names)),
       lambda do |(theme_id, target, name)|
         "#{theme_id}:#{target}:#{name}:#{Theme.compiler_version}"

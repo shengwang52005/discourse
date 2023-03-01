@@ -704,7 +704,7 @@ class ApplicationController < ActionController::Base
   end
 
   def self.banner_json_cache
-    @banner_json_cache ||= DistributedCache.new("banner_json")
+    @banner_json_cache ||= LiveCache.new("banner_json", 1)
   end
 
   def banner_json
@@ -712,7 +712,7 @@ class ApplicationController < ActionController::Base
 
     ApplicationController
       .banner_json_cache
-      .defer_get_set("json") do
+      .getset("json") do
         topic = Topic.where(archetype: Archetype.banner).first
         banner = topic.present? ? topic.banner : {}
         MultiJson.dump(banner)

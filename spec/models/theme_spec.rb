@@ -1353,32 +1353,24 @@ HTML
       expect(Theme.lookup_field(theme_2.id, :desktop, "header")).to eq("World")
 
       expect(
-        Theme.cache.defer_get_set("#{child.id}:common:header:#{Theme.compiler_version}") { raise },
+        Theme.cache.getset("#{child.id}:common:header:#{Theme.compiler_version}") { raise },
       ).to eq(["World"])
       expect(
-        Theme.cache.defer_get_set("#{child.id}:desktop:header:#{Theme.compiler_version}") { raise },
+        Theme.cache.getset("#{child.id}:desktop:header:#{Theme.compiler_version}") { raise },
       ).to eq(nil)
 
       expect(
-        Theme
-          .cache
-          .defer_get_set("#{theme_1.id}:common:header:#{Theme.compiler_version}") { raise },
+        Theme.cache.getset("#{theme_1.id}:common:header:#{Theme.compiler_version}") { raise },
       ).to eq(nil)
       expect(
-        Theme
-          .cache
-          .defer_get_set("#{theme_1.id}:desktop:header:#{Theme.compiler_version}") { raise },
+        Theme.cache.getset("#{theme_1.id}:desktop:header:#{Theme.compiler_version}") { raise },
       ).to eq(nil)
 
       expect(
-        Theme
-          .cache
-          .defer_get_set("#{theme_2.id}:common:header:#{Theme.compiler_version}") { raise },
+        Theme.cache.getset("#{theme_2.id}:common:header:#{Theme.compiler_version}") { raise },
       ).to eq(nil)
       expect(
-        Theme
-          .cache
-          .defer_get_set("#{theme_2.id}:desktop:header:#{Theme.compiler_version}") { raise },
+        Theme.cache.getset("#{theme_2.id}:desktop:header:#{Theme.compiler_version}") { raise },
       ).to eq(nil)
     end
 

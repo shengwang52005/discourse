@@ -305,7 +305,7 @@ module SvgSprite
   def self.theme_svgs(theme_id)
     if theme_id.present?
       cache
-        .defer_get_set_bulk(
+        .getset_bulk(
           Theme.transform_ids(theme_id),
           lambda { |theme_id| "theme_svg_sprites_#{theme_id}" },
         ) do |theme_ids|
@@ -380,7 +380,7 @@ module SvgSprite
   end
 
   def self.expire_cache
-    cache&.clear
+    cache.clear
   end
 
   def self.svgs_for(theme_id)
@@ -513,10 +513,10 @@ License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL
   end
 
   def self.get_set_cache(key, &block)
-    cache.defer_get_set(key, &block)
+    cache.getset(key, &block)
   end
 
   def self.cache
-    @cache ||= DistributedCache.new("svg_sprite")
+    @cache ||= LiveCache.new("svg_sprite", 1000)
   end
 end

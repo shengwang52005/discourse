@@ -13,11 +13,11 @@ class Emoji
   attr_accessor :name, :url, :tonable, :group, :search_aliases
 
   def self.global_emoji_cache
-    @global_emoji_cache ||= DistributedCache.new("global_emoji_cache", namespace: false)
+    @global_emoji_cache ||= LiveCache.new("global_emoji_cache", 1000, namespace: false)
   end
 
   def self.site_emoji_cache
-    @site_emoji_cache ||= DistributedCache.new("site_emoji_cache")
+    @site_emoji_cache ||= LiveCache.new("site_emoji_cache", 1000)
   end
 
   def self.all
@@ -74,7 +74,7 @@ class Emoji
 
     [[global_emoji_cache, :standard], [site_emoji_cache, :custom]].each do |cache, list_key|
       found_emoji =
-        cache.defer_get_set(normalized_name) do
+        cache.getset(normalized_name) do
           [
             Emoji
               .public_send(list_key)

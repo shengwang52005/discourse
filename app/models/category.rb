@@ -258,11 +258,11 @@ class Category < ActiveRecord::Base
   end
 
   def self.topic_id_cache
-    @topic_id_cache ||= DistributedCache.new("category_topic_ids")
+    @topic_id_cache ||= LiveCache.new("category_topic_ids", 1)
   end
 
   def self.topic_ids
-    topic_id_cache.defer_get_set("ids") { Set.new(Category.pluck(:topic_id).compact) }
+    topic_id_cache.getset("ids") { Set.new(Category.pluck(:topic_id).compact) }
   end
 
   def self.reset_topic_ids_cache
@@ -317,10 +317,10 @@ class Category < ActiveRecord::Base
     DB.query_single(sqls.join("\nUNION ALL\n"), params)
   end
 
-  @@subcategory_ids = DistributedCache.new("subcategory_ids")
+  @@subcategory_ids = LiveCache.new("subcategory_ids", 1000)
 
   def self.subcategory_ids(category_id)
-    @@subcategory_ids.defer_get_set(category_id.to_s) do
+    @@subcategory_ids.getset(category_id.to_s) do
       sql = <<~SQL
             WITH RECURSIVE subcategories AS (
                 SELECT :category_id id, 1 depth
@@ -912,14 +912,14 @@ class Category < ActiveRecord::Base
     url[start_idx..-1].gsub("/", separator)
   end
 
-  @@url_cache = DistributedCache.new("category_url")
+  @@url_cache = LiveCache.new("category_url", 1000)
 
   def clear_url_cache
     @@url_cache.clear
   end
 
   def url
-    @@url_cache.defer_get_set(self.id) do
+    @@url_cache.getset(self.id.to_s) do
       "#{Discourse.base_path}/c/#{slug_path.join("/")}/#{self.id}"
     end
   end

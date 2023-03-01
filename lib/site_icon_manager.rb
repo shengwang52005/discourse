@@ -3,7 +3,7 @@
 module SiteIconManager
   extend GlobalPath
 
-  @cache = DistributedCache.new("icon_manager")
+  @cache = LiveCache.new("icon_manager", 1000)
 
   SKETCH_LOGO_ID = -6
 
@@ -108,7 +108,7 @@ module SiteIconManager
   private
 
   def self.get_set_cache(key, &block)
-    @cache.defer_get_set(key, &block)
+    @cache.getset(key, &block)
   end
 
   def self.resolve_original(info)
