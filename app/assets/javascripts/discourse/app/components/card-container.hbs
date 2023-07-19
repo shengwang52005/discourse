@@ -17,3 +17,8 @@
   @showGroup={{this.showGroup}}
   @createNewMessageViaParams={{route-action "createNewMessageViaParams"}}
 />
+
+<PluginOutlet
+  @name="card-container-bottom"
+  @outletArgs={{hash topic=this.topic showUser=this.showUser}}
+/>
