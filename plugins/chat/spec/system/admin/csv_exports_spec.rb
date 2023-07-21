@@ -10,7 +10,7 @@ RSpec.describe "Chat CSV exports", type: :system do
     chat_system_bootstrap
   end
 
-  xit "exports chat messages" do
+  it "exports chat messages" do
     message = Fabricate(:chat_message)
 
     visit "/admin/plugins/chat"
