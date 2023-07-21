@@ -4,6 +4,8 @@ require "csv"
 
 module Jobs
   class ExportCsvFile < ::Jobs::Base
+    include ScreenedEmailsExporter
+
     sidekiq_options retry: false
 
     attr_accessor :extra
@@ -52,7 +54,6 @@ module Jobs
           external_avatar_url
         ],
         staff_action: %w[staff_user action subject created_at details context],
-        screened_email: %w[email action match_count last_match_at created_at ip_address],
         screened_ip: %w[ip_address action match_count last_match_at created_at],
         screened_url: %w[domain action match_count last_match_at created_at],
         report: %w[date value],
@@ -163,14 +164,6 @@ module Jobs
       staff_action_data.find_each(order: :desc) do |staff_action|
         yield get_staff_action_fields(staff_action)
       end
-    end
-
-    def screened_email_export
-      return enum_for(:screened_email_export) unless block_given?
-
-      ScreenedEmail
-        .order("last_match_at DESC")
-        .find_each { |screened_email| yield get_screened_email_fields(screened_email) }
     end
 
     def screened_ip_export
@@ -387,23 +380,6 @@ module Jobs
         staff_action_array.push(data)
       end
       staff_action_array
-    end
-
-    def get_screened_email_fields(screened_email)
-      screened_email_array = []
-
-      HEADER_ATTRS_FOR["screened_email"].each do |attr|
-        data =
-          if attr == "action"
-            ScreenedEmail.actions.key(screened_email.attributes["action_type"]).to_s
-          else
-            screened_email.attributes[attr]
-          end
-
-        screened_email_array.push(data)
-      end
-
-      screened_email_array
     end
 
     def get_screened_ip_fields(screened_ip)
