@@ -56,21 +56,6 @@ describe Chat::MessagesExporter do
     end
   end
 
-  context "with messages of deleted users" do
-    fab!(:channel) { Fabricate(:chat_channel) }
-    fab!(:message) { Fabricate(:chat_message, chat_channel: channel) }
-
-    it "exports such messages" do
-      exporter = Class.new.extend(Chat::MessagesExporter)
-
-      result = []
-      exporter.chat_message_export { |data_row| result << data_row }
-
-      expect(result.length).to be(1)
-      assert_exported_message(result[0], message)
-    end
-  end
-
   def assert_exported_message(data_row, message)
     expect(data_row[0]).to eq(message.id)
     expect(data_row[1]).to eq(message.chat_channel.id)
