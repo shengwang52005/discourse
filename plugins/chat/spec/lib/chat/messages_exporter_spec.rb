@@ -42,7 +42,7 @@ describe Chat::MessagesExporter do
   end
 
   context "with messages from deleted channels" do
-    fab!(:channel) { Fabricate(:chat_channel, deleted_at: 1.day.ago) }
+    fab!(:channel) { Fabricate(:chat_channel, deleted_at: Time.now) }
     fab!(:message) { Fabricate(:chat_message, chat_channel: channel) }
 
     it "exports such messages" do
