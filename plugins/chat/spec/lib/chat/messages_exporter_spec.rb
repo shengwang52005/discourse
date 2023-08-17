@@ -41,7 +41,7 @@ describe Chat::MessagesExporter do
     end
   end
 
-  context "with messages in deleted channels" do
+  context "with messages from deleted channels" do
     fab!(:channel) { Fabricate(:chat_channel, deleted_at: 1.day.ago) }
     fab!(:message) { Fabricate(:chat_message, chat_channel: channel) }
 
