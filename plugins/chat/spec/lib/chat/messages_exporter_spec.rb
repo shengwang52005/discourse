@@ -42,8 +42,8 @@ describe Chat::MessagesExporter do
   end
 
   context "with messages in deleted channels" do
-    fab!(:public_channel) { Fabricate(:chat_channel) }
-    fab!(:public_channel_message_1) { Fabricate(:chat_message, chat_channel: public_channel) }
+    fab!(:channel) { Fabricate(:chat_channel) }
+    fab!(:message) { Fabricate(:chat_message, chat_channel: channel) }
 
     it "exports such messages" do
       exporter = Class.new.extend(Chat::MessagesExporter)
@@ -52,7 +52,7 @@ describe Chat::MessagesExporter do
       exporter.chat_message_export { |data_row| result << data_row }
 
       expect(result.length).to be(1)
-      assert_exported_message(result[0], public_channel_message_1)
+      assert_exported_message(result[0], message)
     end
   end
 
