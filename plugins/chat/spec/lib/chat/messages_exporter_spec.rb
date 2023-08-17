@@ -58,7 +58,7 @@ describe Chat::MessagesExporter do
 
   def assert_exported_message(data_row, message)
     expect(data_row[0]).to eq(message.id)
-    expect(data_row[1]).to eq(message.chat_channel.id)
+    expect(data_row[1]).to eq(message.chat_channel_id)
     expect(data_row[2]).to eq(message.chat_channel.name)
     expect(data_row[3]).to eq(message.user.id)
     expect(data_row[4]).to eq(message.user.username)
