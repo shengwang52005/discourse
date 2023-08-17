@@ -35,6 +35,14 @@ describe Chat::MessagesExporter do
     assert_exported_message(result[6], direct_message_2)
   end
 
+  it "exports messages from deleted channels" do
+    # not implemented
+  end
+
+  it "export messages of deleted users" do
+    # not implemented
+  end
+
   def assert_exported_message(data_row, message)
     expect(data_row[0]).to eq(message.id)
     expect(data_row[1]).to eq(message.chat_channel.id)
