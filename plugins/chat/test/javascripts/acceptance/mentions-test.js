@@ -43,7 +43,7 @@ acceptance("Chat | Mentions", function (needs) {
   const message = {
     id: messageId,
     message: `Hey @${mentionedUser1.username}`,
-    cooked: `<p>Hey <a class="mention" href="/u/${mentionedUser1.username}">@${mentionedUser1.username}</a></p>`,
+    cooked: `<p>Hey <a class="mention" href="/u/${mentionedUser1.username}">@${mentionedUser1.username}</a> <a class="mention" href="/u/${mentionedUser1.username}">@${mentionedUser1.username}</a> <a class="mention" href="/u/${mentionedUser1.username}">@${mentionedUser1.username}</a> <a class="mention" href="/u/${mentionedUser1.username}">@${mentionedUser1.username}</a> <a class="mention" href="/u/${mentionedUser1.username}">@${mentionedUser1.username}</a> <a class="mention" href="/u/${mentionedUser1.username}">@${mentionedUser1.username}</a> <a class="mention" href="/u/${mentionedUser1.username}">@${mentionedUser1.username}</a></p>`,
     mentioned_users: [mentionedUser1],
     user: actingUser,
     created_at: "2020-08-04T15:00:00.000Z",
