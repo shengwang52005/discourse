@@ -15,6 +15,7 @@ acceptance("Chat | Mentions", function (needs) {
     chatable_type: "Category",
     meta: { message_bus_last_ids: {}, can_delete_self: true },
     current_user_membership: { following: true },
+    allow_channel_wide_mentions: false,
     chatable: { id: 1 },
   };
 
@@ -55,6 +56,24 @@ acceptance("Chat | Mentions", function (needs) {
 
     await visit(`/chat/c/-/${channelId}`);
     await fillIn(".chat-composer__input", `Hey @user1 @user2 @user3`);
+
+    assert.dom(".chat-mention-warnings").exists();
+  });
+
+  test("shows a warning for a @here mention when channel-wide mentions are disabled", async function (assert) {
+    this.siteSettings.max_mentions_per_chat_message = 2;
+
+    await visit(`/chat/c/-/${channelId}`);
+    await fillIn(".chat-composer__input", `Hey @here`);
+
+    assert.dom(".chat-mention-warnings").exists();
+  });
+
+  test("shows a warning for an @all mention when channel-wide mentions are disabled", async function (assert) {
+    this.siteSettings.max_mentions_per_chat_message = 2;
+
+    await visit(`/chat/c/-/${channelId}`);
+    await fillIn(".chat-composer__input", `Hey @all`);
 
     assert.dom(".chat-mention-warnings").exists();
   });
