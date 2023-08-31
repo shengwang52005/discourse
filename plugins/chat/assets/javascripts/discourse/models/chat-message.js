@@ -187,16 +187,14 @@ export default class ChatMessage {
       hashtagIcons: site.hashtag_icons,
     };
 
-    if (ChatMessage.cookFunction) {
-      this.cooked = ChatMessage.cookFunction(this.message);
-    } else {
+    if (!ChatMessage.cookFunction) {
       const cookFunction = await generateCookFunction(markdownOptions);
       ChatMessage.cookFunction = (raw) => {
         return transformAutolinks(cookFunction(raw));
       };
-
-      this.cooked = ChatMessage.cookFunction(this.message);
     }
+
+    this.cooked = ChatMessage.cookFunction(this.message);
   }
 
   get read() {
