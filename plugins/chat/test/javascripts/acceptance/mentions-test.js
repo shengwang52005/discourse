@@ -61,8 +61,6 @@ acceptance("Chat | Mentions", function (needs) {
   });
 
   test("shows a warning for a @here mention when channel-wide mentions are disabled", async function (assert) {
-    this.siteSettings.max_mentions_per_chat_message = 2;
-
     await visit(`/chat/c/-/${channelId}`);
     await fillIn(".chat-composer__input", `Hey @here`);
 
@@ -70,8 +68,6 @@ acceptance("Chat | Mentions", function (needs) {
   });
 
   test("shows a warning for an @all mention when channel-wide mentions are disabled", async function (assert) {
-    this.siteSettings.max_mentions_per_chat_message = 2;
-
     await visit(`/chat/c/-/${channelId}`);
     await fillIn(".chat-composer__input", `Hey @all`);
 
