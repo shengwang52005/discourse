@@ -259,17 +259,39 @@ createWidget("header-icons", {
       });
     }
 
-    const search = this.attach("header-dropdown", {
-      title: "search.title",
-      icon: "search",
-      iconId: SEARCH_BUTTON_ID,
-      action: "toggleSearchMenu",
-      active: attrs.searchVisible,
-      href: getURL("/search"),
-      classNames: ["search-dropdown"],
-    });
-
-    icons.push(search);
+    if (this.currentUser?.experimental_search_menu_groups_enabled) {
+      icons.push([
+        new RenderGlimmer(
+          this,
+          `li.header-dropdown-toggle.search-dropdown${
+            attrs.searchVisible && ".active"
+          }`,
+          hbs`<SearchHeaderIcon 
+            @iconId={{@data.id}} 
+            @toggleSearchMenu={{@data.toggleSearchMenu}} 
+            @active={{@data.active}} 
+            @href={{@data.href}}
+          />`,
+          {
+            href: getURL("/search"),
+            toggleSearchMenu: () => this.sendWidgetAction("toggleSearchMenu"),
+            active: attrs.searchVisible,
+            id: SEARCH_BUTTON_ID,
+          }
+        ),
+      ]);
+    } else {
+      const search = this.attach("header-dropdown", {
+        title: "search.title",
+        icon: "search",
+        iconId: SEARCH_BUTTON_ID,
+        action: "toggleSearchMenu",
+        active: attrs.searchVisible,
+        href: getURL("/search"),
+        classNames: ["search-dropdown"],
+      });
+      icons.push(search);
+    }
 
     const hamburger = this.attach("header-dropdown", {
       title: "hamburger_menu",
@@ -420,45 +442,6 @@ createWidget("revamped-user-menu-wrapper", {
   },
 });
 
-createWidget("glimmer-search-menu-wrapper", {
-  buildAttributes() {
-    return { "data-click-outside": true, "aria-live": "polite" };
-  },
-
-  buildClasses() {
-    return ["search-menu glimmer-search-menu"];
-  },
-
-  html() {
-    return [
-      new RenderGlimmer(
-        this,
-        "div.widget-component-connector",
-        hbs`<SearchMenu
-          @inTopicContext={{@data.inTopicContext}}
-          @searchVisible={{@data.searchVisible}}
-          @animationClass={{@data.animationClass}}
-          @closeSearchMenu={{@data.closeSearchMenu}}
-        />`,
-        {
-          closeSearchMenu: this.closeSearchMenu.bind(this),
-          inTopicContext: this.attrs.inTopicContext,
-          searchVisible: this.attrs.searchVisible,
-          animationClass: this.attrs.animationClass,
-        }
-      ),
-    ];
-  },
-
-  closeSearchMenu() {
-    this.sendWidgetAction("toggleSearchMenu");
-  },
-
-  clickOutside() {
-    this.closeSearchMenu();
-  },
-});
-
 export default createWidget("header", {
   tagName: "header.d-header",
   buildKey: () => `header`,
@@ -505,11 +488,21 @@ export default createWidget("header", {
       if (state.searchVisible) {
         if (this.currentUser?.experimental_search_menu_groups_enabled) {
           panels.push(
-            this.attach("glimmer-search-menu-wrapper", {
-              inTopicContext: state.inTopicContext && inTopicRoute,
-              searchVisible: state.searchVisible,
-              animationClass: this.animationClass(),
-            })
+            new RenderGlimmer(
+              this,
+              "div.widget-component-connector",
+              hbs`<SearchMenu
+                @inTopicContext={{and state.inTopicContext inTopicRoute}}
+                @searchVisible={{state.searchVisible}}
+                @animationClass={{@data.animationClass}}
+                @closeSearchMenu={{@data.closeSearchMenu}}
+              />`,
+              {
+                closeSearchMenu: () =>
+                  this.sendWidgetAction("toggleSearchMenu"),
+                animationClass: this.animationClass(),
+              }
+            )
           );
         } else {
           panels.push(

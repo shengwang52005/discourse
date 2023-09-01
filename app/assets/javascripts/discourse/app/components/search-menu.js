@@ -17,6 +17,7 @@ import { search as searchCategoryTag } from "discourse/lib/category-tag-search";
 import userSearch from "discourse/lib/user-search";
 import { CANCELLED_STATUS } from "discourse/lib/autocomplete";
 import { cancel } from "@ember/runloop";
+import { next } from "@ember/runloop";
 
 const CATEGORY_SLUG_REGEXP = /(\#[a-zA-Z0-9\-:]*)$/gi;
 const USERNAME_REGEXP = /(\@[a-zA-Z0-9\-\_]*)$/gi;
@@ -52,6 +53,15 @@ export default class SearchMenu extends Component {
   @tracked invalidTerm = false;
   _debouncer = null;
   _activeSearch = null;
+
+  willDestroy() {}
+
+  @action
+  clickOustide(event) {
+    if (event.target.contains(document.querySelector(".search-menu"))) {
+      this.args.toggleSearchMenu();
+    }
+  }
 
   get includesTopics() {
     return this.typeFilter !== DEFAULT_TYPE_FILTER;

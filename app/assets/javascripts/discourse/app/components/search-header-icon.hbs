@@ -1,0 +1,14 @@
+<button
+  class="icon btn-flat"
+  href={{@href}}
+  aria-haspopup={{true}}
+  data-auto-route={{true}}
+  aria-expanded={{true}}
+  title={{i18n "search.title"}}
+  aria-label={{@label}}
+  id={{@iconId}}
+  href={{@href}}
+  {{on "click" @toggleSearchMenu}}
+>
+  {{d-icon "search"}}
+</button>
