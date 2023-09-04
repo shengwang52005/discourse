@@ -71,7 +71,7 @@ export function sanitizeAsync(text, options) {
 
 export function parseAsync(md, options = {}, env = {}) {
   return loadMarkdownIt().then(() => {
-    return createPrettyText(options).opts.engine.parse(md, env);
+    return createPrettyText(options).parse(md, env);
   });
 }
 

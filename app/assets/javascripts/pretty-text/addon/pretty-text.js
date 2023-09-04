@@ -125,8 +125,8 @@ export default class {
     return result ? result : "";
   }
 
-  parse(raw) {
-    return this.opts.engine.parse(raw);
+  parse(markdown, env = {}) {
+    return this.opts.engine.parse(markdown, env);
   }
 
   sanitize(html) {
