@@ -60,7 +60,7 @@ export default class ChatComposerWarningsTracker extends Service {
     }
 
     currentMessage.cook().then(() => {
-      const mentions = parseMentionedUsernames(currentMessage.cooked);
+      const mentions = this.#parseMentionsRaw(currentMessage.message);
       this.mentionsCount = mentions?.length;
 
       if (this.mentionsCount > 0) {
@@ -86,6 +86,10 @@ export default class ChatComposerWarningsTracker extends Service {
         this.#resetMentionStats();
       }
     });
+  }
+
+  #parseMentionsRaw(raw) {
+    return [];
   }
 
   #resetMentionStats() {
