@@ -95,6 +95,10 @@ export async function parseMentions(
       continue; // Move to the next token
     }
 
+    if (!token.content) {
+      continue;
+    }
+
     if (!insideCodeBlock) {
       // If the token is not inside a code block, check for mentions
       const regExp = mentionRegex(unicodeUsernamesEnabled);
