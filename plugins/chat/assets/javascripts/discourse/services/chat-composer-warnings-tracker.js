@@ -61,34 +61,37 @@ export default class ChatComposerWarningsTracker extends Service {
 
     currentMessage.cook().then(() => {
       // fixme implement parseMentions on ChatMessage
-      const mentions = parseMentions(
+      parseMentions(
         currentMessage.message,
         this.siteSettings.unicode_usernames
-      );
-      this.mentionsCount = mentions?.length;
+      ).then((mentions) => {
+        console.log("returned mentions", mentions);
+        this.mentionsCount = mentions?.length;
 
-      if (this.mentionsCount > 0) {
-        this.tooManyMentions =
-          this.mentionsCount > this.siteSettings.max_mentions_per_chat_message;
+        if (this.mentionsCount > 0) {
+          this.tooManyMentions =
+            this.mentionsCount >
+            this.siteSettings.max_mentions_per_chat_message;
 
-        if (!this.tooManyMentions) {
-          const newMentions = mentions.filter(
-            (mention) => !(mention in this._mentionWarningsSeen)
-          );
+          if (!this.tooManyMentions) {
+            const newMentions = mentions.filter(
+              (mention) => !(mention in this._mentionWarningsSeen)
+            );
 
-          this.channelWideMentionDisallowed =
-            !currentMessage.channel.allowChannelWideMentions &&
-            (mentions.includes("here") || mentions.includes("all"));
+            this.channelWideMentionDisallowed =
+              !currentMessage.channel.allowChannelWideMentions &&
+              (mentions.includes("here") || mentions.includes("all"));
 
-          if (newMentions?.length > 0) {
-            this.#recordNewWarnings(newMentions, mentions);
-          } else {
-            this.#rebuildWarnings(mentions);
+            if (newMentions?.length > 0) {
+              this.#recordNewWarnings(newMentions, mentions);
+            } else {
+              this.#rebuildWarnings(mentions);
+            }
           }
+        } else {
+          this.#resetMentionStats();
         }
-      } else {
-        this.#resetMentionStats();
-      }
+      });
     });
   }
 
