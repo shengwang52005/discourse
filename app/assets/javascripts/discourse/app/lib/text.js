@@ -78,7 +78,7 @@ export function parseAsync(md, options = {}, env = {}) {
 export async function parseMentions(markdown, options) {
   await loadMarkdownIt();
   const prettyText = createPrettyText(options);
-  const tokens = prettyText.parse(markdown);
+  const tokens = prettyText.parseMarkdownTokens(markdown);
   console.log("Parsed", tokens);
 
   let insideCodeBlock = false;

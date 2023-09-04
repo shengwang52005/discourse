@@ -125,7 +125,7 @@ export default class {
     return result ? result : "";
   }
 
-  parse(raw) {
+  parseMarkdownTokens(raw) {
     return this.opts.engine.parse(raw);
   }
 
