@@ -4,7 +4,7 @@ import discourseDebounce from "discourse-common/lib/debounce";
 import { bind } from "discourse-common/utils/decorators";
 import { cancel } from "@ember/runloop";
 import { tracked } from "@glimmer/tracking";
-import { parseMentionedUsernames } from "discourse/lib/parse-mentions";
+import { parseMentions } from "discourse/lib/text";
 
 const MENTION_RESULT = {
   invalid: -1,
@@ -60,7 +60,8 @@ export default class ChatComposerWarningsTracker extends Service {
     }
 
     currentMessage.cook().then(() => {
-      const mentions = this.#parseMentionsRaw(currentMessage.message);
+      // fixme implement parseMentions on ChatMessage
+      const mentions = parseMentions(currentMessage.message);
       this.mentionsCount = mentions?.length;
 
       if (this.mentionsCount > 0) {
@@ -86,10 +87,6 @@ export default class ChatComposerWarningsTracker extends Service {
         this.#resetMentionStats();
       }
     });
-  }
-
-  #parseMentionsRaw(raw) {
-    return [];
   }
 
   #resetMentionStats() {

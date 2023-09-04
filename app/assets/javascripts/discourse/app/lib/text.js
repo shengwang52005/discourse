@@ -75,6 +75,10 @@ export function parseAsync(md, options = {}, env = {}) {
   });
 }
 
+export function parseMentions(text, options) {
+  return [];
+}
+
 function loadMarkdownIt() {
   return new Promise((resolve) => {
     let markdownItURL = Session.currentProp("markdownItURL");
