@@ -79,7 +79,7 @@ export function parseAsync(md, options = {}, env = {}) {
 export async function parseMentions(markdown, options) {
   await loadMarkdownIt();
   const prettyText = createPrettyText(options);
-  const tokens = prettyText.parseMarkdownTokens(markdown);
+  const tokens = prettyText.parse(markdown);
   let mentions = _parseMentions(tokens);
   return [...new Set(mentions)];
 }
