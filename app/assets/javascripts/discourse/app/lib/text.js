@@ -75,7 +75,10 @@ export function parseAsync(md, options = {}, env = {}) {
   });
 }
 
-export function parseMentions(text, options) {
+export async function parseMentions(markdown, options) {
+  await loadMarkdownIt();
+  const prettyText = createPrettyText(options);
+  console.log("Parsed", prettyText.opts.engine.parse(markdown));
   return [];
 }
 
