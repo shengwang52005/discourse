@@ -89,31 +89,42 @@ export async function parseMentions(
   const tokens = prettyText.parseMarkdownTokens(markdown);
   console.log("Parsed tokens", tokens);
 
-  let mentions = [];
+  const mentionsRegexp = mentionRegex(unicodeUsernamesEnabled, true);
+  let mentions = _parseMentions(tokens, mentionsRegexp);
 
+  console.log("mentions", mentions);
+
+  return [...new Set(mentions)];
+}
+
+function _parseMentions(tokens, mentionRegexp) {
+  const mentions = [];
   for (const token of tokens) {
     if (!token.content) {
       continue;
     }
 
+    console.log("checking if it's code");
     if (token.type === "code_inline" && token.tag === "code") {
       continue;
     }
 
-    const regExp = mentionRegex(unicodeUsernamesEnabled, true);
-    const matches = token.content.matchAll(regExp);
-    for (const match of matches) {
-      console.log("match", match);
-      const mention = match[1] || match[2]; // fixme andrei why do we do it like this?
-      if (mention) {
-        mentions.push(mention);
+    if (token.children) {
+      _parseMentions(token.children).forEach((mention) =>
+        mentions.push(mention)
+      );
+    } else {
+      const matches = token.content.matchAll(mentionRegexp);
+      for (const match of matches) {
+        const mention = match[1] || match[2]; // fixme andrei why do we do it like this?
+        if (mention) {
+          mentions.push(mention);
+        }
       }
     }
   }
 
-  console.log("mentions", mentions);
-
-  return [...new Set(mentions)];
+  return mentions;
 }
 
 function loadMarkdownIt() {
