@@ -84,7 +84,7 @@ export async function parseMentions(markdown, options) {
   let insideCodeBlock = false;
   let mentions = [];
 
-  for (let token of tokens) {
+  for (const token of tokens) {
     if (token.type === "fence" && token.tag === "code") {
       insideCodeBlock = !insideCodeBlock; // Toggle the flag when entering/exiting a code block
       continue; // Move to the next token
