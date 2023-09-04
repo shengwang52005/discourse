@@ -77,54 +77,40 @@ export function parseAsync(md, options = {}, env = {}) {
 }
 
 // fixme andrei write tests for this method
-export async function parseMentions(
-  markdown,
-  unicodeUsernamesEnabled,
-  options
-) {
-  console.log("markdown", markdown);
-
+export async function parseMentions(markdown, options) {
   await loadMarkdownIt();
   const prettyText = createPrettyText(options);
   const tokens = prettyText.parseMarkdownTokens(markdown);
-  console.log("Parsed tokens", tokens);
-
-  const mentionsRegexp = mentionRegex(unicodeUsernamesEnabled, true);
-  let mentions = _parseMentions(tokens, mentionsRegexp);
-
-  console.log("mentions", mentions);
-
+  let mentions = _parseMentions(tokens);
   return [...new Set(mentions)];
 }
 
-function _parseMentions(tokens, mentionRegexp) {
+function _parseMentions(tokens) {
   const mentions = [];
+  let insideMention = false;
   for (const token of tokens) {
-    if (!token.content) {
-      continue;
-    }
-
-    console.log("checking if it's code");
-    if (token.type === "code_inline" && token.tag === "code") {
-      continue;
-    }
-
     if (token.children) {
       _parseMentions(token.children).forEach((mention) =>
         mentions.push(mention)
       );
     } else {
-      const matches = token.content.matchAll(mentionRegexp);
-      for (const match of matches) {
-        const mention = match[1] || match[2]; // fixme andrei why do we do it like this?
-        if (mention) {
-          mentions.push(mention);
-        }
+      if (token.type === "mention_open") {
+        insideMention = true;
+        continue;
+      }
+
+      if (insideMention && token.type === "text") {
+        mentions.push(truncateMention(token.content));
+        insideMention = false;
       }
     }
   }
 
   return mentions;
+}
+
+function truncateMention(mention) {
+  return mention.substring(1).trim();
 }
 
 function loadMarkdownIt() {
