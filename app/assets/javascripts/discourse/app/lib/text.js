@@ -91,8 +91,8 @@ export async function parseMentions(
 
   for (const token of tokens) {
     if (token.type === "fence" && token.tag === "code") {
-      insideCodeBlock = !insideCodeBlock; // Toggle the flag when entering/exiting a code block
-      continue; // Move to the next token
+      insideCodeBlock = !insideCodeBlock;
+      continue;
     }
 
     if (!token.content) {
@@ -100,13 +100,14 @@ export async function parseMentions(
     }
 
     if (!insideCodeBlock) {
-      // If the token is not inside a code block, check for mentions
-      const regExp = mentionRegex(unicodeUsernamesEnabled);
-      const matches = token.content.match(regExp) || [];
-      console.log("matches", matches);
-      const mention = matches[1] || matches[2];
-      if (mention) {
-        mentions.push(mention);
+      const regExp = mentionRegex(unicodeUsernamesEnabled, true);
+      const matches = token.content.matchAll(regExp);
+      for (const match of matches) {
+        console.log("match", match);
+        const mention = match[1] || match[2]; // fixme andrei why do we do it like this?
+        if (mention) {
+          mentions.push(mention);
+        }
       }
     }
   }
