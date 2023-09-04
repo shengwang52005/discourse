@@ -125,6 +125,10 @@ export default class {
     return result ? result : "";
   }
 
+  parse(raw) {
+    return this.opts.engine.parse(raw);
+  }
+
   sanitize(html) {
     return this.opts.sanitizer(html).trim();
   }
