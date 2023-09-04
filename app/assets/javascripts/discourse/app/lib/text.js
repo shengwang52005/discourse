@@ -9,7 +9,6 @@ import { helperContext } from "discourse-common/lib/helpers";
 import { htmlSafe } from "@ember/template";
 import loadScript from "discourse/lib/load-script";
 import { sanitize as textSanitize } from "pretty-text/sanitizer";
-import { mentionRegex } from "pretty-text/mentions";
 
 function getOpts(opts) {
   let context = helperContext();
