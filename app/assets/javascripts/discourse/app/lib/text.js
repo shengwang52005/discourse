@@ -9,6 +9,7 @@ import { helperContext } from "discourse-common/lib/helpers";
 import { htmlSafe } from "@ember/template";
 import loadScript from "discourse/lib/load-script";
 import { sanitize as textSanitize } from "pretty-text/sanitizer";
+import { mentionRegex } from "pretty-text/mentions";
 
 function getOpts(opts) {
   let context = helperContext();
@@ -75,7 +76,11 @@ export function parseAsync(md, options = {}, env = {}) {
   });
 }
 
-export async function parseMentions(markdown, options) {
+export async function parseMentions(
+  markdown,
+  unicodeUsernamesEnabled,
+  options
+) {
   await loadMarkdownIt();
   const prettyText = createPrettyText(options);
   const tokens = prettyText.parseMarkdownTokens(markdown);
@@ -92,8 +97,13 @@ export async function parseMentions(markdown, options) {
 
     if (!insideCodeBlock) {
       // If the token is not inside a code block, check for mentions
-      const matches = token.content.match(/@\w+/g) || [];
-      mentions += matches;
+      const regExp = mentionRegex(unicodeUsernamesEnabled);
+      const matches = token.content.match(regExp) || [];
+      console.log("matches", matches);
+      const mention = matches[1] || matches[2];
+      if (mention) {
+        mentions.push(mention);
+      }
     }
   }
 

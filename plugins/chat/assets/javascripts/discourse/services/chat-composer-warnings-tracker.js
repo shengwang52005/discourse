@@ -61,7 +61,10 @@ export default class ChatComposerWarningsTracker extends Service {
 
     currentMessage.cook().then(() => {
       // fixme implement parseMentions on ChatMessage
-      const mentions = parseMentions(currentMessage.message);
+      const mentions = parseMentions(
+        currentMessage.message,
+        this.siteSettings.unicode_usernames
+      );
       this.mentionsCount = mentions?.length;
 
       if (this.mentionsCount > 0) {
