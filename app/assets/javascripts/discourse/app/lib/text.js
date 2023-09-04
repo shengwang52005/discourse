@@ -80,7 +80,26 @@ export async function parseMentions(markdown, options) {
   const prettyText = createPrettyText(options);
   const tokens = prettyText.parse(markdown);
   console.log("Parsed", tokens);
-  return [];
+
+  let insideCodeBlock = false;
+  let mentions = [];
+
+  for (let token of tokens) {
+    if (token.type === "fence" && token.tag === "code") {
+      insideCodeBlock = !insideCodeBlock; // Toggle the flag when entering/exiting a code block
+      continue; // Move to the next token
+    }
+
+    if (!insideCodeBlock) {
+      // If the token is not inside a code block, check for mentions
+      const matches = token.content.match(/@\w+/g) || [];
+      mentions += matches;
+    }
+  }
+
+  console.log("mentions", mentions);
+
+  return mentions;
 }
 
 function loadMarkdownIt() {
