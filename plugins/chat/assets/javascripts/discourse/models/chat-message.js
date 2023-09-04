@@ -173,11 +173,7 @@ export default class ChatMessage {
     if (this.isDestroyed || this.isDestroying) {
       return;
     }
-
-    if (!ChatMessage.cookFunction) {
-      await this.#initCookFunction();
-    }
-
+    await this.#ensureCookFunctionInitialized();
     this.cooked = ChatMessage.cookFunction(this.message);
   }
 
@@ -357,7 +353,11 @@ export default class ChatMessage {
     }
   }
 
-  async #initCookFunction() {
+  async #ensureCookFunctionInitialized() {
+    if (ChatMessage.cookFunction) {
+      return;
+    }
+
     const cookFunction = await generateCookFunction(this.markdownOptions);
     ChatMessage.cookFunction = (raw) => {
       return transformAutolinks(cookFunction(raw));
