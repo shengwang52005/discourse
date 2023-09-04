@@ -225,20 +225,6 @@ export default class ChatMessage {
     return this.manager?.messages?.objectAt?.(this.index + 1);
   }
 
-  get markdownOptions() {
-    const site = getOwner(this).lookup("service:site");
-    return {
-      featuresOverride:
-        site.markdown_additional_options?.chat?.limited_pretty_text_features,
-      markdownItRules:
-        site.markdown_additional_options?.chat
-          ?.limited_pretty_text_markdown_rules,
-      hashtagTypesInPriorityOrder:
-        site.hashtag_configurations?.["chat-composer"],
-      hashtagIcons: site.hashtag_icons,
-    };
-  }
-
   highlight() {
     this.highlighted = true;
 
@@ -256,7 +242,7 @@ export default class ChatMessage {
   }
 
   async parseMentions() {
-    return await parseMentions(this.message, this.markdownOptions);
+    return await parseMentions(this.message, this.#markdownOptions);
   }
 
   toJSONDraft() {
@@ -362,9 +348,23 @@ export default class ChatMessage {
       return;
     }
 
-    const cookFunction = await generateCookFunction(this.markdownOptions);
+    const cookFunction = await generateCookFunction(this.#markdownOptions);
     ChatMessage.cookFunction = (raw) => {
       return transformAutolinks(cookFunction(raw));
+    };
+  }
+
+  get #markdownOptions() {
+    const site = getOwner(this).lookup("service:site");
+    return {
+      featuresOverride:
+        site.markdown_additional_options?.chat?.limited_pretty_text_features,
+      markdownItRules:
+        site.markdown_additional_options?.chat
+          ?.limited_pretty_text_markdown_rules,
+      hashtagTypesInPriorityOrder:
+        site.hashtag_configurations?.["chat-composer"],
+      hashtagIcons: site.hashtag_icons,
     };
   }
 
