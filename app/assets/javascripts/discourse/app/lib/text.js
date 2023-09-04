@@ -76,45 +76,44 @@ export function parseAsync(md, options = {}, env = {}) {
   });
 }
 
+// fixme andrei write tests for this method
 export async function parseMentions(
   markdown,
   unicodeUsernamesEnabled,
   options
 ) {
+  console.log("markdown", markdown);
+
   await loadMarkdownIt();
   const prettyText = createPrettyText(options);
   const tokens = prettyText.parseMarkdownTokens(markdown);
-  console.log("Parsed", tokens);
+  console.log("Parsed tokens", tokens);
 
-  let insideCodeBlock = false;
   let mentions = [];
 
   for (const token of tokens) {
-    if (token.type === "fence" && token.tag === "code") {
-      insideCodeBlock = !insideCodeBlock;
-      continue;
-    }
-
     if (!token.content) {
       continue;
     }
 
-    if (!insideCodeBlock) {
-      const regExp = mentionRegex(unicodeUsernamesEnabled, true);
-      const matches = token.content.matchAll(regExp);
-      for (const match of matches) {
-        console.log("match", match);
-        const mention = match[1] || match[2]; // fixme andrei why do we do it like this?
-        if (mention) {
-          mentions.push(mention);
-        }
+    if (token.type === "code_inline" && token.tag === "code") {
+      continue;
+    }
+
+    const regExp = mentionRegex(unicodeUsernamesEnabled, true);
+    const matches = token.content.matchAll(regExp);
+    for (const match of matches) {
+      console.log("match", match);
+      const mention = match[1] || match[2]; // fixme andrei why do we do it like this?
+      if (mention) {
+        mentions.push(mention);
       }
     }
   }
 
   console.log("mentions", mentions);
 
-  return mentions;
+  return [...new Set(mentions)];
 }
 
 function loadMarkdownIt() {
