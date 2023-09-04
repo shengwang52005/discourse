@@ -4,7 +4,6 @@ import discourseDebounce from "discourse-common/lib/debounce";
 import { bind } from "discourse-common/utils/decorators";
 import { cancel } from "@ember/runloop";
 import { tracked } from "@glimmer/tracking";
-import { parseMentions } from "discourse/lib/text";
 
 const MENTION_RESULT = {
   invalid: -1,
@@ -59,8 +58,7 @@ export default class ChatComposerWarningsTracker extends Service {
       return;
     }
 
-    // implement parseMentions on chat message
-    parseMentions(currentMessage.message).then((mentions) => {
+    currentMessage.parseMentions().then((mentions) => {
       this.mentionsCount = mentions?.length;
 
       if (this.mentionsCount > 0) {
