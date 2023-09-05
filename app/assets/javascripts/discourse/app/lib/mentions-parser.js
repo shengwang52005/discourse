@@ -20,10 +20,7 @@ export class MentionsParser {
       } else {
         if (token.type === "mention_open") {
           insideMention = true;
-          continue;
-        }
-
-        if (insideMention && token.type === "text") {
+        } else if (insideMention && token.type === "text") {
           mentions.push(this.#truncateMention(token.content));
           insideMention = false;
         }
