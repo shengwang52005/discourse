@@ -60,14 +60,14 @@ acceptance("Chat | Mentions", function (needs) {
     assert.dom(".chat-mention-warnings").exists();
   });
 
-  test("shows a warning for a @here mention when channel-wide mentions are disabled", async function (assert) {
+  test("shows warning for @here mentions when channel-wide mentions are disabled", async function (assert) {
     await visit(`/chat/c/-/${channelId}`);
     await fillIn(".chat-composer__input", `Hey @here`);
 
     assert.dom(".chat-mention-warnings").exists();
   });
 
-  test("shows a warning for an @all mention when channel-wide mentions are disabled", async function (assert) {
+  test("shows warning for @all mention when channel-wide mentions are disabled", async function (assert) {
     await visit(`/chat/c/-/${channelId}`);
     await fillIn(".chat-composer__input", `Hey @all`);
 
