@@ -5,7 +5,7 @@ export class MentionsParser {
 
   parse(markdown) {
     const tokens = this.prettyText.parse(markdown);
-    let mentions = this.#parse(tokens);
+    const mentions = this.#parse(tokens);
     return [...new Set(mentions)];
   }
 
