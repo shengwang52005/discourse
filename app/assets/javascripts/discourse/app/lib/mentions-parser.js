@@ -5,16 +5,16 @@ export class MentionsParser {
 
   parse(markdown) {
     const tokens = this.prettyText.parse(markdown);
-    let mentions = this._parseMentions(tokens);
+    let mentions = this.#parse(tokens);
     return [...new Set(mentions)];
   }
 
-  _parseMentions(tokens) {
+  #parse(tokens) {
     const mentions = [];
     let insideMention = false;
     for (const token of tokens) {
       if (token.children) {
-        this._parseMentions(token.children).forEach((mention) =>
+        this.#parse(token.children).forEach((mention) =>
           mentions.push(mention)
         );
       } else {
@@ -24,7 +24,7 @@ export class MentionsParser {
         }
 
         if (insideMention && token.type === "text") {
-          mentions.push(this.truncateMention(token.content));
+          mentions.push(this.#truncateMention(token.content));
           insideMention = false;
         }
       }
@@ -33,7 +33,7 @@ export class MentionsParser {
     return mentions;
   }
 
-  truncateMention(mention) {
+  #truncateMention(mention) {
     return mention.substring(1).trim();
   }
 }
