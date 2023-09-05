@@ -9,6 +9,7 @@ import { helperContext } from "discourse-common/lib/helpers";
 import { htmlSafe } from "@ember/template";
 import loadScript from "discourse/lib/load-script";
 import { sanitize as textSanitize } from "pretty-text/sanitizer";
+import { MentionsParser } from "discourse/lib/mentions-parser";
 
 function getOpts(opts) {
   let context = helperContext();
@@ -77,37 +78,9 @@ export function parseAsync(md, options = {}, env = {}) {
 
 export async function parseMentions(markdown, options) {
   await loadMarkdownIt();
-  const tokens = createPrettyText(options).parse(markdown);
-  let mentions = _parseMentions(tokens);
-  return [...new Set(mentions)];
-}
-
-function _parseMentions(tokens) {
-  const mentions = [];
-  let insideMention = false;
-  for (const token of tokens) {
-    if (token.children) {
-      _parseMentions(token.children).forEach((mention) =>
-        mentions.push(mention)
-      );
-    } else {
-      if (token.type === "mention_open") {
-        insideMention = true;
-        continue;
-      }
-
-      if (insideMention && token.type === "text") {
-        mentions.push(truncateMention(token.content));
-        insideMention = false;
-      }
-    }
-  }
-
-  return mentions;
-}
-
-function truncateMention(mention) {
-  return mention.substring(1).trim();
+  const prettyText = createPrettyText(options);
+  const mentionsParser = new MentionsParser(prettyText);
+  return mentionsParser.parse(markdown);
 }
 
 function loadMarkdownIt() {
