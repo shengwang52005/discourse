@@ -75,7 +75,6 @@ export function parseAsync(md, options = {}, env = {}) {
   });
 }
 
-// fixme andrei write tests for this method
 export async function parseMentions(markdown, options) {
   await loadMarkdownIt();
   const tokens = createPrettyText(options).parse(markdown);
