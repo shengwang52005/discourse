@@ -21,7 +21,7 @@ export class MentionsParser {
         if (token.type === "mention_open") {
           insideMention = true;
         } else if (insideMention && token.type === "text") {
-          mentions.push(this.#truncateMention(token.content));
+          mentions.push(this.#extractMention(token.content));
           insideMention = false;
         }
       }
@@ -30,7 +30,7 @@ export class MentionsParser {
     return mentions;
   }
 
-  #truncateMention(mention) {
+  #extractMention(mention) {
     return mention.substring(1).trim();
   }
 }
