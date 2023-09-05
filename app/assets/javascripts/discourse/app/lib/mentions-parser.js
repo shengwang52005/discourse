@@ -31,6 +31,6 @@ export class MentionsParser {
   }
 
   #extractMention(mention) {
-    return mention.substring(1).trim();
+    return mention.trim().substring(1);
   }
 }
