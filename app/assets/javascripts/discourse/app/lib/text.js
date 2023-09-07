@@ -47,15 +47,13 @@ export function cookAsync(text, options) {
 // Warm up pretty text with a set of options and return a function
 // which can be used to cook without rebuilding pretty-text every time
 export function generateCookFunction(options) {
-  return loadMarkdownIt().then(() => {
-    const prettyText = createPrettyText(options);
+  return createPrettyText(options).then((prettyText) => {
     return (text) => prettyText.cook(text);
   });
 }
 
 export function generateLinkifyFunction(options) {
-  return loadMarkdownIt().then(() => {
-    const prettyText = createPrettyText(options);
+  return createPrettyText(options).then((prettyText) => {
     return prettyText.opts.engine.linkify;
   });
 }
@@ -65,20 +63,19 @@ export function sanitize(text, options) {
 }
 
 export function sanitizeAsync(text, options) {
-  return loadMarkdownIt().then(() => {
-    return createPrettyText(options).sanitize(text);
+  return createPrettyText(options).then((prettyText) => {
+    return prettyText.sanitize(text);
   });
 }
 
 export function parseAsync(md, options = {}, env = {}) {
-  return loadMarkdownIt().then(() => {
-    return createPrettyText(options).parse(md, env);
+  return createPrettyText(options).then((prettyText) => {
+    return prettyText.parse(md, env);
   });
 }
 
 export async function parseMentions(markdown, options) {
-  await loadMarkdownIt();
-  const prettyText = createPrettyText(options);
+  const prettyText = await createPrettyText(options);
   const mentionsParser = new MentionsParser(prettyText);
   return mentionsParser.parse(markdown);
 }
@@ -99,7 +96,8 @@ function loadMarkdownIt() {
   });
 }
 
-function createPrettyText(options) {
+async function createPrettyText(options) {
+  await loadMarkdownIt();
   return new PrettyText(getOpts(options));
 }
 
