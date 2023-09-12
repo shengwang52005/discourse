@@ -49,7 +49,7 @@ export default class PostTextSelectionToolbar extends Component {
             @label="post.quote_edit"
             @title="post.quote_edit_shortcut"
             class="btn-flat quote-edit-label"
-            {{on "click" this.editSelection}}
+            {{on "click" this.toggleFastEdit}}
           />
         {{/if}}
 
@@ -171,10 +171,16 @@ export default class PostTextSelectionToolbar extends Component {
   }
 
   @action
-  async editSelection() {
+  async closeFastEdit() {
+    this.isFastEditing = false;
+    await this.args.data.hideToolbar();
+  }
+
+  @action
+  async toggleFastEdit() {
     if (this.args.data.supportsFastEdit) {
       if (this.site.desktopView) {
-        this.toggleFastEdit();
+        this.isFastEditing = !this.isFastEditing;
       } else {
         this.modal.show(FastEditModal, {
           model: {
@@ -234,16 +240,6 @@ export default class PostTextSelectionToolbar extends Component {
       this.args.data.hideToolbar();
       return;
     }
-  }
-
-  @action
-  async closeFastEdit() {
-    this.isFastEditing = false;
-    await this.args.data.hideToolbar();
-  }
-
-  toggleFastEdit() {
-    this.isFastEditing = !this.isFastEditing;
   }
 
   @action

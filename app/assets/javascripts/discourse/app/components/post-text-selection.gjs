@@ -40,7 +40,11 @@ export function fixQuotes(str) {
 export default class PostTextSelection extends Component {
   <template>
     {{! template-lint-disable modifier-name-case }}
-    <div {{this.documentListeners}} {{this.appEventsListeners}}></div>
+    <div
+      {{this.documentListeners}}
+      {{this.appEventsListeners}}
+      {{this.runLoopHandlers}}
+    ></div>
   </template>
 
   @service appEvents;
@@ -51,6 +55,13 @@ export default class PostTextSelection extends Component {
   @service menu;
 
   prevSelection;
+
+  runLoopHandlers = modifier(() => {
+    return () => {
+      cancel(this.selectionChangeHandler);
+      cancel(this.holdingMouseDownHandle);
+    };
+  });
 
   documentListeners = modifier(() => {
     document.addEventListener("mousedown", this.mousedown, { passive: true });
@@ -223,6 +234,7 @@ export default class PostTextSelection extends Component {
 
   @bind
   async mousedown() {
+    this.isMousedown = true;
     this.holdingMouseDown = false;
     this.holdingMouseDownHandler = discourseLater(() => {
       this.holdingMouseDown = true;
@@ -231,10 +243,10 @@ export default class PostTextSelection extends Component {
 
   @bind
   async mouseup() {
-    cancel(this.holdingMouseDownHandler);
+    this.prevSelection = null;
+    this.isMousedown = false;
 
     if (this.holdingMouseDown) {
-      this.prevSelection = null;
       this.onSelectionChanged();
     } else {
       await this.hideToolbar();
@@ -243,9 +255,12 @@ export default class PostTextSelection extends Component {
 
   @bind
   selectionchange() {
-    if (this.holdingMouseDown) {
-      this.onSelectionChanged();
-    }
+    cancel(this.selectionChangeHandler);
+    this.selectionChangeHandler = discourseLater(() => {
+      if (!this.isMousedown) {
+        this.onSelectionChanged();
+      }
+    }, 100);
   }
 
   get post() {
