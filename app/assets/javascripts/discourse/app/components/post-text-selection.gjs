@@ -1,4 +1,3 @@
-import { tracked } from "@glimmer/tracking";
 import {
   selectedNode,
   selectedRange,
