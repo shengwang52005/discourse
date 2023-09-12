@@ -248,8 +248,6 @@ export default class PostTextSelection extends Component {
 
     if (this.holdingMouseDown) {
       this.onSelectionChanged();
-    } else {
-      await this.hideToolbar();
     }
   }
 
