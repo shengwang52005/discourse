@@ -183,7 +183,7 @@ export default class PostTextSelection extends Component {
 
     // avoid hard loops in quote selection unconditionally
     // this can happen if you triple click text in firefox
-    if (this.prevSelection === _selectedText) {
+    if (this.menuInstance?.expanded && this.prevSelection === _selectedText) {
       return;
     }
 
