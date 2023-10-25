@@ -17,6 +17,8 @@ export default class AdminWebHooksIndexController extends Controller {
 
   @action
   destroy(webhook) {
+    // eslint-disable-next-line no-console
+    console.trace();
     return this.dialog.deleteConfirm({
       message: I18n.t("admin.web_hooks.delete_confirm"),
       didConfirm: async () => {
