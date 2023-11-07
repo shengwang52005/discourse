@@ -147,11 +147,16 @@ class PostAnalyzer
     @cooked_stripped ||=
       begin
         doc = Nokogiri::HTML5.fragment(cook(@raw, topic_id: @topic_id))
-        doc.css(
-          "pre .mention, aside.quote > .title, aside.quote .mention, aside.quote .mention-group, .onebox, .elided",
-        ).remove
-        doc
+        strip(doc)
       end
+  end
+
+  def strip(fragment)
+    chat_message_quote_mention = ".chat-transcript .mention"
+    fragment.css(
+      "pre .mention, aside.quote > .title, aside.quote .mention, aside.quote .mention-group, .onebox, .elided, #{chat_message_quote_mention}",
+    ).remove
+    fragment
   end
 
   private
