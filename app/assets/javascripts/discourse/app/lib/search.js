@@ -316,6 +316,7 @@ export function reciprocallyRankedList(lists, identifiers) {
     } else {
       // Sum reciprocal ranks for duplicates
       existingResult.reciprocalRank += result.reciprocalRank;
+      existingResult.boosted = true;
     }
   });
 
