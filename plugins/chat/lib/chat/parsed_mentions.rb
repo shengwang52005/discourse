@@ -32,13 +32,7 @@ module Chat
     end
 
     def count
-      @count ||=
-        begin
-          result = @parsed_direct_mentions.length + @parsed_group_mentions.length
-          result += 1 if @has_global_mention
-          result += 1 if @has_here_mention
-          result
-        end
+      all_mentioned_users_ids.length
     end
 
     def global_mentions
