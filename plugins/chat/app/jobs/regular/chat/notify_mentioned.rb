@@ -145,7 +145,7 @@ module Jobs
         memberships = get_memberships(user_ids)
 
         memberships.each do |membership|
-          mention = ::Chat::Mention.find_by(user: membership.user, chat_message: @chat_message)
+          mention = ::Chat::UserMention.find_by(user: membership.user, chat_message: @chat_message)
           if mention.present?
             create_notification!(membership, mention, mention_type)
             send_notifications(membership, mention_type)
