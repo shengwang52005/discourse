@@ -21,7 +21,7 @@ module Chat
           (uccm.last_read_message_id IS NULL OR chat_messages.id > uccm.last_read_message_id) AND
           (uccm.last_unread_mention_when_emailed_id IS NULL OR chat_messages.id > uccm.last_unread_mention_when_emailed_id) AND
           (
-            (cm.user_id = :user_id AND n.id IS NOT NULL AND uccm.following IS true AND chat_channels.chatable_type = 'Category') OR
+            (cm.target_id = :user_id AND n.id IS NOT NULL AND uccm.following IS true AND chat_channels.chatable_type = 'Category') OR
             (chat_channels.chatable_type = 'DirectMessage')
           )
         SQL
