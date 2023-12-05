@@ -4,7 +4,6 @@ module Chat
   class Mention < ActiveRecord::Base
     self.table_name = "chat_mentions"
 
-    belongs_to :user, foreign_key: :target_id
     belongs_to :chat_message, class_name: "Chat::Message"
     has_many :notifications,
              -> { where notification_type: Notification.types[:chat_mention] },
