@@ -8,7 +8,7 @@ class AddTypeAndTargetIdToChatMentions < ActiveRecord::Migration[7.0]
 
     DB.exec <<~SQL
       UPDATE chat_mentions
-      SET type = 'UserMention', target_id = user_id;
+      SET type = 'Chat::UserMention', target_id = user_id;
     SQL
 
     # fixme andrei add indexes
