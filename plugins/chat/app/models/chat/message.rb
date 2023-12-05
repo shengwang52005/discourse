@@ -248,6 +248,7 @@ module Chat
     end
 
     def upsert_mentions
+      # fixme andrei make sure we create group / all / here mentions to
       mentioned_user_ids = parsed_mentions.all_mentioned_users_ids
       old_mentions = chat_mentions.pluck(:user_id)
 
