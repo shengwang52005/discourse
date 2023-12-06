@@ -288,13 +288,11 @@ module Chat
       return if user_ids.empty?
 
       now = Time.zone.now
-      mentions = []
-      User
-        .where(id: user_ids)
-        .find_each do |user|
-          mentions << {
+      mentions =
+        user_ids.map do |target_id|
+          {
             chat_message_id: self.id,
-            target_id: user.id,
+            target_id: target_id,
             type: "Chat::UserMention",
             created_at: now,
             updated_at: now,
@@ -317,7 +315,7 @@ module Chat
     end
 
     def upsert_group_mentions
-      raise "Not implemented"
+      # raise "Not implemented"
     end
 
     def upsert_user_mentions
