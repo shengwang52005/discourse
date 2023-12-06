@@ -371,16 +371,14 @@ RSpec.describe Chat::UpdateMessage do
       describe "with group mentions" do
         it "creates group mentions on update" do
           chat_message = create_chat_message(user1, "ping nobody", public_chat_channel)
-          expect {
-            described_class.call(
-              guardian: guardian,
-              message_id: chat_message.id,
-              message: "ping @#{admin_group.name}",
-            )
-          }.to change { Chat::Mention.where(chat_message: chat_message).count }.by(2)
 
-          expect(admin1.chat_mentions.where(chat_message: chat_message)).to be_present
-          expect(admin2.chat_mentions.where(chat_message: chat_message)).to be_present
+          described_class.call(
+            guardian: guardian,
+            message_id: chat_message.id,
+            message: "ping @#{admin_group.name}",
+          )
+
+          expect(admin_group.chat_mentions.where(chat_message: chat_message).count).to be(1)
         end
 
         it "doesn't duplicate mentions when the user is already direct mentioned and then group mentioned" do
