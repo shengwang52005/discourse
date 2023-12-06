@@ -9,10 +9,6 @@ module Chat
              -> { where notification_type: Notification.types[:chat_mention] },
              foreign_key: :reference_id,
              dependent: :destroy
-
-    def self.types
-      @types ||= Enum.new(user: 1, group: 2, all: 3, here: 4)
-    end
   end
 end
 
