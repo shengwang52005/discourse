@@ -317,7 +317,7 @@ module Chat
 
     def upsert_user_mentions
       mentioned_user_ids = parsed_mentions.all_mentioned_users_ids
-      old_mentions = chat_mentions.where(type: "Chat::UserMention").pluck(:target_id)
+      old_mentions = user_mentions.pluck(:target_id)
 
       mentioned_user_ids_to_drop = old_mentions - mentioned_user_ids
       delete_mentions(mentioned_user_ids_to_drop)
