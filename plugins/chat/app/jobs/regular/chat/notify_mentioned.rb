@@ -145,12 +145,22 @@ module Jobs
         memberships = get_memberships(user_ids)
 
         memberships.each do |membership|
-          mention = ::Chat::UserMention.find_by(user: membership.user, chat_message: @chat_message)
+          mention = find_mention(mention_type, membership.user.id)
           if mention.present?
             create_notification!(membership, mention, mention_type)
             send_notifications(membership, mention_type)
           end
         end
+      end
+
+      def find_mention(mention_type, user_id = nil)
+        if mention_type == :direct_mentions || mention_type == :global_mentions ||
+             mention_type == :here_mentions
+          return ::Chat::UserMention.find_by(target_id: user_id, chat_message: @chat_message)
+        end
+
+        group_id = Group.find_by(name: mention_type).id
+        ::Chat::GroupMention.find_by(target_id: group_id, chat_message: @chat_message)
       end
     end
   end
