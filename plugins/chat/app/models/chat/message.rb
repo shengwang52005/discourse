@@ -253,15 +253,8 @@ module Chat
     end
 
     def upsert_mentions
+      upsert_user_mentions
       # fixme andrei make sure we create group / all / here mentions too
-      mentioned_user_ids = parsed_mentions.all_mentioned_users_ids
-      old_mentions = chat_mentions.where(type: "Chat::UserMention").pluck(:target_id)
-
-      mentioned_user_ids_to_drop = old_mentions - mentioned_user_ids
-      delete_mentions(mentioned_user_ids_to_drop)
-
-      mentioned_user_ids_to_add = mentioned_user_ids - old_mentions
-      insert_mentions(mentioned_user_ids_to_add)
     end
 
     def in_thread?
@@ -320,6 +313,17 @@ module Chat
 
     def ensure_last_editor_id
       self.last_editor_id ||= self.user_id
+    end
+
+    def upsert_user_mentions
+      mentioned_user_ids = parsed_mentions.all_mentioned_users_ids
+      old_mentions = chat_mentions.where(type: "Chat::UserMention").pluck(:target_id)
+
+      mentioned_user_ids_to_drop = old_mentions - mentioned_user_ids
+      delete_mentions(mentioned_user_ids_to_drop)
+
+      mentioned_user_ids_to_add = mentioned_user_ids - old_mentions
+      insert_mentions(mentioned_user_ids_to_add)
     end
   end
 end
