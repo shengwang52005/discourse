@@ -369,6 +369,13 @@ RSpec.describe Chat::UpdateMessage do
       end
 
       describe "with group mentions" do
+        fab!(:group_1) do
+          Fabricate(
+            :public_group,
+            users: [user1, user2],
+            mentionable_level: Group::ALIAS_LEVELS[:everyone],
+          )
+        end
         fab!(:group_2) do
           Fabricate(
             :public_group,
@@ -383,17 +390,16 @@ RSpec.describe Chat::UpdateMessage do
           described_class.call(
             guardian: guardian,
             message_id: chat_message.id,
-            message: "ping @#{admin_group.name}",
+            message: "ping @#{group_1.name}",
           )
 
-          expect(admin_group.chat_mentions.where(chat_message: chat_message).count).to be(1)
+          expect(group_1.chat_mentions.where(chat_message: chat_message).count).to be(1)
         end
 
         it "updates mention records when another group was mentioned on message update" do
-          chat_message =
-            create_chat_message(user1, "ping @#{admin_group.name}", public_chat_channel)
+          chat_message = create_chat_message(user1, "ping @#{group_1.name}", public_chat_channel)
 
-          expect(chat_message.group_mentions.map(&:target_id)).to contain_exactly(admin_group.id)
+          expect(chat_message.group_mentions.map(&:target_id)).to contain_exactly(group_1.id)
 
           described_class.call(
             guardian: guardian,
@@ -405,8 +411,7 @@ RSpec.describe Chat::UpdateMessage do
         end
 
         it "deletes a mention record when a group mention was removed on message update" do
-          chat_message =
-            create_chat_message(user1, "ping @#{admin_group.name}", public_chat_channel)
+          chat_message = create_chat_message(user1, "ping @#{group_1.name}", public_chat_channel)
 
           described_class.call(
             guardian: guardian,
@@ -414,7 +419,7 @@ RSpec.describe Chat::UpdateMessage do
             message: "ping nobody anymore!",
           )
 
-          expect(admin_group.chat_mentions.where(chat_message: chat_message).count).to be(0)
+          expect(group_1.chat_mentions.where(chat_message: chat_message).count).to be(0)
         end
       end
     end
