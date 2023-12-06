@@ -47,9 +47,14 @@ module Chat
             dependent: :destroy,
             class_name: "Chat::WebhookEvent",
             foreign_key: :chat_message_id
+    # fixme andrei drop this base class association:
     has_many :chat_mentions,
              dependent: :destroy,
              class_name: "Chat::Mention",
+             foreign_key: :chat_message_id
+    has_many :user_mentions,
+             dependent: :destroy,
+             class_name: "Chat::UserMention",
              foreign_key: :chat_message_id
 
     scope :in_public_channel,

@@ -78,7 +78,7 @@ module Chat
             :uploads,
             :chat_webhook_event,
             :chat_channel,
-            chat_mentions: {
+            user_mentions: {
               user: :user_status,
             },
             user: :user_status,
@@ -87,7 +87,7 @@ module Chat
             :uploads,
             :chat_webhook_event,
             :chat_channel,
-            chat_mentions: {
+            user_mentions: {
               user: :user_status,
             },
             user: :user_status,
