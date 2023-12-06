@@ -369,6 +369,14 @@ RSpec.describe Chat::UpdateMessage do
       end
 
       describe "with group mentions" do
+        fab!(:group_2) do
+          Fabricate(
+            :public_group,
+            users: [user3, user4],
+            mentionable_level: Group::ALIAS_LEVELS[:everyone],
+          )
+        end
+
         it "creates a mention record when a group was mentioned on message update" do
           chat_message = create_chat_message(user1, "ping nobody", public_chat_channel)
 
@@ -381,17 +389,19 @@ RSpec.describe Chat::UpdateMessage do
           expect(admin_group.chat_mentions.where(chat_message: chat_message).count).to be(1)
         end
 
-        it "doesn't duplicate mentions when the user is already direct mentioned and then group mentioned" do
-          chat_message = create_chat_message(user1, "ping @#{admin2.username}", public_chat_channel)
-          expect {
-            described_class.call(
-              guardian: guardian,
-              message_id: chat_message.id,
-              message: "ping @#{admin_group.name} @#{admin2.username}",
-            )
-          }.to change { admin1.chat_mentions.count }.by(1).and not_change {
-                  admin2.chat_mentions.count
-                }
+        it "updates mention records when another group was mentioned on message update" do
+          chat_message =
+            create_chat_message(user1, "ping @#{admin_group.name}", public_chat_channel)
+
+          expect(chat_message.group_mentions.map(&:target_id)).to contain_exactly(admin_group.id)
+
+          described_class.call(
+            guardian: guardian,
+            message_id: chat_message.id,
+            message: "ping @#{group_2.name}",
+          )
+
+          expect(chat_message.reload.group_mentions.map(&:target_id)).to contain_exactly(group_2.id)
         end
 
         it "deletes a mention record when a group mention was removed on message update" do
