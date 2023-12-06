@@ -397,16 +397,14 @@ RSpec.describe Chat::UpdateMessage do
         it "deletes old mentions when group mention is removed" do
           chat_message =
             create_chat_message(user1, "ping @#{admin_group.name}", public_chat_channel)
-          expect {
-            described_class.call(
-              guardian: guardian,
-              message_id: chat_message.id,
-              message: "ping nobody anymore!",
-            )
-          }.to change { Chat::Mention.where(chat_message: chat_message).count }.by(-2)
 
-          expect(admin1.chat_mentions.where(chat_message: chat_message)).not_to be_present
-          expect(admin2.chat_mentions.where(chat_message: chat_message)).not_to be_present
+          described_class.call(
+            guardian: guardian,
+            message_id: chat_message.id,
+            message: "ping nobody anymore!",
+          )
+
+          expect(admin_group.chat_mentions.where(chat_message: chat_message).count).to be(0)
         end
       end
     end
