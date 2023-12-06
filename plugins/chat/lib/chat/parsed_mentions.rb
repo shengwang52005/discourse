@@ -24,7 +24,6 @@ module Chat
         begin
           user_ids = global_mentions.pluck(:id)
           user_ids.concat(direct_mentions.pluck(:id))
-          user_ids.concat(group_mentions.pluck(:id))
           user_ids.concat(here_mentions.pluck(:id))
           user_ids.uniq!
           user_ids
