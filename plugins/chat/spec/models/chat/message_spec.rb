@@ -544,7 +544,7 @@ describe Chat::Message do
         text: message.message + " @#{user3.username} @#{user4.username} ",
       )
 
-      expect(message.chat_mentions.pluck(:user_id)).to match_array(
+      expect(message.chat_mentions.pluck(:target_id)).to match_array(
         [user1.id, user2.id, user3.id, user4.id],
       )
       expect(message.chat_mentions.pluck(:id)).to include(*existing_mention_ids) # existing mentions weren't recreated
@@ -554,14 +554,14 @@ describe Chat::Message do
       # user 2 is not mentioned anymore
       update_message!(message, user: message.user, text: "Hey @#{user1.username}")
 
-      expect(message.chat_mentions.pluck(:user_id)).to contain_exactly(user1.id)
+      expect(message.chat_mentions.pluck(:target_id)).to contain_exactly(user1.id)
     end
 
     it "changes nothing if passed mentions are identical to existing mentions" do
       existing_mention_ids = message.chat_mentions.pluck(:id)
       update_message!(message, user: message.user, text: message.message)
 
-      expect(message.chat_mentions.pluck(:user_id)).to match_array(already_mentioned)
+      expect(message.chat_mentions.pluck(:target_id)).to match_array(already_mentioned)
       expect(message.chat_mentions.pluck(:id)).to include(*existing_mention_ids) # the mentions weren't recreated
     end
   end
