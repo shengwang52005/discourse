@@ -56,6 +56,10 @@ module Chat
              dependent: :destroy,
              class_name: "Chat::UserMention",
              foreign_key: :chat_message_id
+    has_many :group_mentions,
+             dependent: :destroy,
+             class_name: "Chat::GroupMention",
+             foreign_key: :chat_message_id
 
     scope :in_public_channel,
           -> do
@@ -280,20 +284,20 @@ module Chat
 
     private
 
-    def delete_mentions(user_ids)
-      chat_mentions.where(type: "Chat::UserMention", target_id: user_ids).destroy_all
+    def delete_mentions(mention_type, target_ids)
+      chat_mentions.where(type: mention_type, target_id: target_ids).destroy_all
     end
 
-    def insert_mentions(user_ids)
-      return if user_ids.empty?
+    def insert_user_mentions(mention_type, target_ids)
+      return if target_ids.empty?
 
       now = Time.zone.now
       mentions =
-        user_ids.map do |target_id|
+        target_ids.map do |target_id|
           {
             chat_message_id: self.id,
             target_id: target_id,
-            type: "Chat::UserMention",
+            type: mention_type,
             created_at: now,
             updated_at: now,
           }
@@ -315,7 +319,14 @@ module Chat
     end
 
     def upsert_group_mentions
-      # raise "Not implemented"
+      mentioned_group_ids = parsed_mentions.groups_to_mention.pluck(:id)
+      old_mentions = group_mentions.pluck(:target_id)
+
+      mentioned_group_ids_to_drop = old_mentions - mentioned_group_ids
+      delete_mentions("Chat::GroupMention", mentioned_group_ids_to_drop)
+
+      mentioned_group_ids_to_add = mentioned_group_ids - old_mentions
+      insert_user_mentions("Chat::GroupMention", mentioned_group_ids_to_add)
     end
 
     def upsert_user_mentions
@@ -323,10 +334,10 @@ module Chat
       old_mentions = user_mentions.pluck(:target_id)
 
       mentioned_user_ids_to_drop = old_mentions - mentioned_user_ids
-      delete_mentions(mentioned_user_ids_to_drop)
+      delete_mentions("Chat::UserMention", mentioned_user_ids_to_drop)
 
       mentioned_user_ids_to_add = mentioned_user_ids - old_mentions
-      insert_mentions(mentioned_user_ids_to_add)
+      insert_user_mentions("Chat::UserMention", mentioned_user_ids_to_add)
     end
   end
 end
