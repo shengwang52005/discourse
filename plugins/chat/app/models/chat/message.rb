@@ -254,7 +254,8 @@ module Chat
 
     def upsert_mentions
       upsert_user_mentions
-      # fixme andrei make sure we create group / all / here mentions too
+      upsert_group_mentions
+      # fixme andrei make sure we create all / here mentions too
     end
 
     def in_thread?
@@ -313,6 +314,10 @@ module Chat
 
     def ensure_last_editor_id
       self.last_editor_id ||= self.user_id
+    end
+
+    def upsert_group_mentions
+      raise "Not implemented"
     end
 
     def upsert_user_mentions
