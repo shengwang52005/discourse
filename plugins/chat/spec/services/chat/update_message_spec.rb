@@ -369,7 +369,7 @@ RSpec.describe Chat::UpdateMessage do
       end
 
       describe "with group mentions" do
-        it "creates group mentions on update" do
+        it "creates a mention record when a group was mentioned on message update" do
           chat_message = create_chat_message(user1, "ping nobody", public_chat_channel)
 
           described_class.call(
@@ -394,7 +394,7 @@ RSpec.describe Chat::UpdateMessage do
                 }
         end
 
-        it "deletes old mentions when group mention is removed" do
+        it "deletes a mention record when a group mention was removed on message update" do
           chat_message =
             create_chat_message(user1, "ping @#{admin_group.name}", public_chat_channel)
 
