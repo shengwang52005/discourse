@@ -82,13 +82,13 @@ module Chat
     end
 
     def notify_edit
-      # fixme make sure to take into account group and mass mentions too
+      # fixme andrei make sure we have index for this join
       already_notified_user_ids =
-        Chat::UserMention
-          .where(chat_message: @chat_message)
-          .left_outer_joins(:notifications)
-          .where.not(notifications: { id: nil })
-          .pluck(:target_id)
+        Notification
+          .where(notification_type: Notification.types[:chat_mention])
+          .joins("INNER JOIN chat_mentions ON chat_mentions.id = notifications.reference_id")
+          .where("chat_mentions.chat_message_id = ?", @chat_message.id)
+          .pluck(:user_id)
 
       to_notify, inaccessible, all_mentioned_user_ids = list_users_to_notify
       needs_notification_ids = all_mentioned_user_ids - already_notified_user_ids
