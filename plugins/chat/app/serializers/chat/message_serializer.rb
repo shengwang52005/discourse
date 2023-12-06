@@ -36,10 +36,7 @@ module Chat
 
     def mentioned_users
       object
-        .chat_mentions
-        .where(
-          type: "Chat::UserMention",
-        ) # fixme andrei there should be a better way of querying subclasses
+        .user_mentions
         .includes(user: :user_status)
         .map(&:user)
         .compact
