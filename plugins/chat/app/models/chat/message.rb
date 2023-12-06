@@ -248,9 +248,9 @@ module Chat
     end
 
     def upsert_mentions
-      # fixme andrei make sure we create group / all / here mentions to
+      # fixme andrei make sure we create group / all / here mentions too
       mentioned_user_ids = parsed_mentions.all_mentioned_users_ids
-      old_mentions = chat_mentions.pluck(:user_id)
+      old_mentions = chat_mentions.where(type: "Chat::UserMention").pluck(:target_id)
 
       mentioned_user_ids_to_drop = old_mentions - mentioned_user_ids
       delete_mentions(mentioned_user_ids_to_drop)
@@ -282,7 +282,7 @@ module Chat
     private
 
     def delete_mentions(user_ids)
-      chat_mentions.where(user_id: user_ids).destroy_all
+      chat_mentions.where(type: "Chat::UserMention", target_id: user_ids).destroy_all
     end
 
     def insert_mentions(user_ids)
@@ -295,7 +295,6 @@ module Chat
         .find_each do |user|
           mentions << {
             chat_message_id: self.id,
-            user_id: user.id, # fixme andrei stop setting user_id value here
             target_id: user.id,
             type: "Chat::UserMention",
             created_at: now,
