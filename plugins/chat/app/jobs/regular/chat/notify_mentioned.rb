@@ -154,8 +154,11 @@ module Jobs
       end
 
       def find_mention(mention_type, user_id = nil)
-        if mention_type == :direct_mentions || mention_type == :global_mentions ||
-             mention_type == :here_mentions
+        if mention_type == :global_mentions
+          return ::Chat::AllMention.find_by(chat_message: @chat_message)
+        end
+
+        if mention_type == :direct_mentions || mention_type == :here_mentions
           return ::Chat::UserMention.find_by(target_id: user_id, chat_message: @chat_message)
         end
 
