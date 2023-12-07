@@ -501,7 +501,7 @@ describe Jobs::Chat::NotifyMentioned do
       end
 
       context "with private channels" do
-        it "users a different translated title" do
+        it "uses a different translated title" do
           message = create_chat_message(channel: @personal_chat_channel)
 
           desktop_notification =
