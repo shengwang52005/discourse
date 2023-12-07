@@ -60,6 +60,10 @@ module Chat
              dependent: :destroy,
              class_name: "Chat::GroupMention",
              foreign_key: :chat_message_id
+    has_one :all_mention,
+            dependent: :destroy,
+            class_name: "Chat::AllMention",
+            foreign_key: :chat_message_id
 
     scope :in_public_channel,
           -> do
@@ -259,7 +263,12 @@ module Chat
     def upsert_mentions
       upsert_user_mentions
       upsert_group_mentions
-      # fixme andrei make sure we create all / here mentions too
+
+      if parsed_mentions.has_global_mention && all_mention.blank?
+        AllMention.create!(chat_message_id: self.id)
+      end
+
+      # fixme andrei make sure we create here mentions too
     end
 
     def in_thread?
