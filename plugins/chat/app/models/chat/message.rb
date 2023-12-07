@@ -297,7 +297,7 @@ module Chat
       chat_mentions.where(type: mention_type, target_id: target_ids).destroy_all
     end
 
-    def insert_user_mentions(mention_type, target_ids)
+    def insert_mentions(mention_type, target_ids)
       return if target_ids.empty?
 
       now = Time.zone.now
@@ -335,7 +335,7 @@ module Chat
       delete_mentions("Chat::GroupMention", mentioned_group_ids_to_drop)
 
       mentioned_group_ids_to_add = mentioned_group_ids - old_mentions
-      insert_user_mentions("Chat::GroupMention", mentioned_group_ids_to_add)
+      insert_mentions("Chat::GroupMention", mentioned_group_ids_to_add)
     end
 
     def upsert_user_mentions
@@ -346,7 +346,7 @@ module Chat
       delete_mentions("Chat::UserMention", mentioned_user_ids_to_drop)
 
       mentioned_user_ids_to_add = mentioned_user_ids - old_mentions
-      insert_user_mentions("Chat::UserMention", mentioned_user_ids_to_add)
+      insert_mentions("Chat::UserMention", mentioned_user_ids_to_add)
     end
   end
 end
