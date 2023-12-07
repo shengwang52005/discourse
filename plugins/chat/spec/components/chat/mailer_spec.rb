@@ -46,7 +46,7 @@ describe Chat::Mailer do
   end
 
   describe "for chat mentions" do
-    fab!(:mention) { Fabricate(:chat_mention, user: user_1, chat_message: chat_message) }
+    fab!(:mention) { Fabricate(:user_chat_mention, user: user_1, chat_message: chat_message) }
 
     it "skips users without chat access" do
       chatters_group.remove(user_1)
@@ -157,7 +157,7 @@ describe Chat::Mailer do
         last_unread_mention_when_emailed_id: chat_message.id,
       )
       unread_message = Fabricate(:chat_message, chat_channel: chat_channel, user: sender)
-      Fabricate(:chat_mention, user: user_1, chat_message: unread_message)
+      Fabricate(:user_chat_mention, user: user_1, chat_message: unread_message)
 
       described_class.send_unread_mentions_summary
 
@@ -183,7 +183,7 @@ describe Chat::Mailer do
         last_read_message_id: nil,
       )
       new_message = Fabricate(:chat_message, chat_channel: chat_channel, user: sender)
-      Fabricate(:chat_mention, user: user_2, chat_message: new_message)
+      Fabricate(:user_chat_mention, user: user_2, chat_message: new_message)
 
       described_class.send_unread_mentions_summary
 
@@ -222,7 +222,7 @@ describe Chat::Mailer do
         )
 
         another_channel_message = Fabricate(:chat_message, chat_channel: chat_channel, user: sender)
-        Fabricate(:chat_mention, user: user_1, chat_message: another_channel_message)
+        Fabricate(:user_chat_mention, user: user_1, chat_message: another_channel_message)
 
         expect { described_class.send_unread_mentions_summary }.not_to change(
           Jobs::UserEmail.jobs,
@@ -234,7 +234,7 @@ describe Chat::Mailer do
         another_channel = Fabricate(:category_channel)
         another_channel_message =
           Fabricate(:chat_message, chat_channel: another_channel, user: sender)
-        Fabricate(:chat_mention, user: user_1, chat_message: another_channel_message)
+        Fabricate(:user_chat_mention, user: user_1, chat_message: another_channel_message)
         another_channel_membership =
           Fabricate(
             :user_chat_channel_membership,
@@ -264,7 +264,7 @@ describe Chat::Mailer do
     end
 
     it "only queues the job once when the user has mentions and private messages" do
-      Fabricate(:chat_mention, user: user_1, chat_message: chat_message)
+      Fabricate(:user_chat_mention, user: user_1, chat_message: chat_message)
 
       described_class.send_unread_mentions_summary
 
@@ -280,7 +280,7 @@ describe Chat::Mailer do
           chat_channel: chat_channel,
           last_read_message_id: chat_message.id,
         )
-      Fabricate(:chat_mention, user: user_2, chat_message: chat_message)
+      Fabricate(:user_chat_mention, user: user_2, chat_message: chat_message)
 
       described_class.send_unread_mentions_summary
 

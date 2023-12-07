@@ -116,7 +116,7 @@ Fabricator(:chat_message_with_service, class_name: "Chat::CreateMessage") do
 end
 
 # fixme andrei improve fabricators to support all types of mentions
-Fabricator(:chat_mention, class_name: "Chat::UserMention") do
+Fabricator(:user_chat_mention, class_name: "Chat::UserMention") do
   transient read: false
   transient high_priority: true
   transient identifier: :direct_mentions

@@ -254,7 +254,7 @@ describe UserNotifications do
           before do
             notification = Fabricate(:notification)
             Fabricate(
-              :chat_mention,
+              :user_chat_mention,
               user: user,
               chat_message: chat_message,
               notifications: [notification],
@@ -307,7 +307,7 @@ describe UserNotifications do
             )
             notification = Fabricate(:notification)
             Fabricate(
-              :chat_mention,
+              :user_chat_mention,
               user: user,
               chat_message: another_chat_message,
               notifications: [notification],
@@ -347,7 +347,7 @@ describe UserNotifications do
               )
               notification = Fabricate(:notification)
               Fabricate(
-                :chat_mention,
+                :user_chat_mention,
                 user: user,
                 chat_message: another_chat_message,
                 notifications: [notification],
@@ -376,7 +376,7 @@ describe UserNotifications do
             Fabricate(:chat_message, user: sender, chat_channel: channel)
             notification = Fabricate(:notification)
             Fabricate(
-              :chat_mention,
+              :user_chat_mention,
               user: user,
               chat_message: chat_message,
               notifications: [notification],
@@ -403,7 +403,7 @@ describe UserNotifications do
         before do
           notification = Fabricate(:notification)
           Fabricate(
-            :chat_mention,
+            :user_chat_mention,
             user: user,
             chat_message: chat_message,
             notifications: [notification],
@@ -510,7 +510,7 @@ describe UserNotifications do
             new_message = Fabricate(:chat_message, user: sender, chat_channel: channel)
             notification = Fabricate(:notification)
             Fabricate(
-              :chat_mention,
+              :user_chat_mention,
               user: user,
               chat_message: new_message,
               notifications: [notification],
@@ -643,7 +643,7 @@ describe UserNotifications do
                 msg = Fabricate(:chat_message, user: sender, chat_channel: channel)
                 notification = Fabricate(:notification)
                 Fabricate(
-                  :chat_mention,
+                  :user_chat_mention,
                   user: user,
                   chat_message: msg,
                   notifications: [notification],
@@ -670,7 +670,7 @@ describe UserNotifications do
                   msg = Fabricate(:chat_message, user: sender, chat_channel: channel)
                   notification = Fabricate(:notification)
                   Fabricate(
-                    :chat_mention,
+                    :user_chat_mention,
                     user: user,
                     chat_message: msg,
                     notifications: [notification],
@@ -697,7 +697,7 @@ describe UserNotifications do
               Fabricate(:chat_message, user: sender, chat_channel: channel, cooked: "New message")
             notification = Fabricate(:notification)
             Fabricate(
-              :chat_mention,
+              :user_chat_mention,
               user: user,
               chat_message: new_message,
               notifications: [notification],

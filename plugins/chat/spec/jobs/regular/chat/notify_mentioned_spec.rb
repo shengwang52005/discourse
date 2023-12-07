@@ -44,7 +44,7 @@ describe Jobs::Chat::NotifyMentioned do
         created_at: 10.minutes.ago,
         thread: thread,
       )
-    Fabricate(:chat_mention, chat_message: message, user: mentioned_user)
+    Fabricate(:user_chat_mention, chat_message: message, user: mentioned_user)
     message
   end
 
