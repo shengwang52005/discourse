@@ -159,7 +159,7 @@ module Jobs
           return ::Chat::UserMention.find_by(target_id: user_id, chat_message: @chat_message)
         end
 
-        group_id = Group.where("LOWER(name) = ?", mention_type.to_s).first.id
+        group_id = Group.where("LOWER(name) = ?", mention_type).first.id
         ::Chat::GroupMention.find_by(target_id: group_id, chat_message: @chat_message)
       end
     end
