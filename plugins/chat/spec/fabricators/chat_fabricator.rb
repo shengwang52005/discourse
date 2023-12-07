@@ -125,12 +125,8 @@ Fabricator(:user_chat_mention, class_name: "Chat::UserMention") do
 end
 
 Fabricator(:group_chat_mention, class_name: "Chat::GroupMention") do
-  transient read: false
-  transient high_priority: true
-  transient identifier: :direct_mentions
-
-  group { Fabricate(:group) }
   chat_message { Fabricate(:chat_message) }
+  group { Fabricate(:group) }
 end
 
 Fabricator(:chat_message_reaction, class_name: "Chat::MessageReaction") do
