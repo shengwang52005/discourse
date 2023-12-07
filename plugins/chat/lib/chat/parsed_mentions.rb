@@ -22,8 +22,7 @@ module Chat
     def all_mentioned_users_ids
       @all_mentioned_users_ids ||=
         begin
-          user_ids = global_mentions.pluck(:id)
-          user_ids.concat(direct_mentions.pluck(:id))
+          user_ids = direct_mentions.pluck(:id)
           user_ids.concat(here_mentions.pluck(:id))
           user_ids.uniq!
           user_ids
