@@ -1396,6 +1396,7 @@ email:
   email_total_attachment_size_limit_kb:
     default: 0
     max: 51200
+    type: file_size_restriction
   post_excerpts_in_emails: false
   raw_email_max_length: 220000
   raw_rejected_email_max_length: 4000
@@ -1416,10 +1417,12 @@ files:
     client: true
     default: 4096
     max: 102400
+    type: file_size_restriction
   max_attachment_size_kb:
     client: true
     default: 4096
     max: 1024000
+    type: file_size_restriction
   max_image_megapixels:
     default: 40
     min: 5
@@ -1428,6 +1431,7 @@ files:
     hidden: true
     default: 50000
     max: 1024000
+    type: file_size_restriction
   theme_authorized_extensions:
     default: "wasm|jpg|jpeg|png|woff|woff2|svg|eot|ttf|otf|gif|webp|avif|js"
     type: list
@@ -1490,6 +1494,7 @@ files:
     default: 1024
     min: 1
     max: 10240
+    type: file_size_restriction
   secure_uploads_pm_only:
     default: false
     hidden: true
@@ -1550,6 +1555,13 @@ files:
     client: true
     default: "0"
     enum: "TrustLevelAndStaffAndDisabledSetting"
+    hidden: true
+  uploaded_avatars_allowed_groups:
+    client: true
+    default: 10
+    type: group_list
+    allow_any: false
+    refresh: true
   default_avatars:
     default: ""
     type: url_list
@@ -1672,12 +1684,33 @@ trust:
   min_trust_to_create_topic:
     default: 0
     enum: "TrustLevelSetting"
+    hidden: true
+  create_topic_allowed_groups:
+    default: 10
+    type: group_list
+    allow_any: false
+    refresh: true
+    validator: "AtLeastOneGroupValidator"
   min_trust_to_edit_wiki_post:
     default: 1
     enum: "TrustLevelSetting"
+    hidden: true
+  edit_wiki_post_allowed_groups:
+    default: 11
+    type: group_list
+    allow_any: false
+    refresh: true
+    validator: "AtLeastOneGroupValidator"
   min_trust_to_edit_post:
     default: 0
     enum: "TrustLevelSetting"
+    hidden: true
+  edit_post_allowed_groups:
+    default: "10"
+    type: group_list
+    allow_any: false
+    refresh: true
+    validator: "AtLeastOneGroupValidator"
   min_trust_to_allow_self_wiki:
     default: 3
     enum: "TrustLevelSetting"
@@ -1687,6 +1720,12 @@ trust:
   min_trust_to_flag_posts:
     default: 1
     enum: "TrustLevelSetting"
+  flag_post_allowed_groups:
+    default: "11"
+    type: group_list
+    allow_any: false
+    refresh: true
+    validator: "AtLeastOneGroupValidator"
   min_trust_to_post_links:
     default: 0
     enum: "TrustLevelSetting"
@@ -1701,6 +1740,12 @@ trust:
     default: 0
     client: true
     enum: "TrustLevelSetting"
+  user_card_background_allowed_groups:
+    default: "10"
+    type: group_list
+    allow_any: false
+    refresh: true
+    validator: "AtLeastOneGroupValidator"
   min_trust_level_to_allow_invite:
     default: 2
     enum: "TrustLevelSetting"
@@ -1763,6 +1808,13 @@ trust:
     client: true
   tl4_delete_posts_and_topics:
     default: false
+    client: true
+    hidden: true
+  delete_all_posts_and_topics_allowed_groups:
+    default: ""
+    type: group_list
+    allow_any: false
+    refresh: true
     client: true
   edit_all_topic_groups:
     default: "13"
@@ -2306,6 +2358,9 @@ backups:
   maximum_backups:
     client: true
     default: 5
+  remove_older_backups:
+    client: true
+    default: ""
   automatic_backups_enabled:
     default: true
   backup_frequency:

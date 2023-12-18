@@ -19,6 +19,18 @@ module SiteSettings::DeprecatedSettings
       "3.3",
     ],
     ["email_in_min_trust", "email_in_allowed_groups", false, "3.3"],
+    ["min_trust_to_edit_wiki_post", "edit_wiki_post_allowed_groups", false, "3.3"],
+    ["allow_uploaded_avatars", "uploaded_avatars_allowed_groups", false, "3.3"],
+    ["min_trust_to_create_topic", "create_topic_allowed_groups", false, "3.3"],
+    ["min_trust_to_edit_post", "edit_post_allowed_groups", false, "3.3"],
+    ["min_trust_to_flag_posts", "flag_post_allowed_groups", false, "3.3"],
+    ["tl4_delete_posts_and_topics", "delete_all_posts_and_topics_allowed_groups", false, "3.3"],
+    [
+      "min_trust_level_to_allow_user_card_background",
+      "user_card_background_allowed_groups",
+      false,
+      "3.3",
+    ],
   ]
 
   def setup_deprecated_methods

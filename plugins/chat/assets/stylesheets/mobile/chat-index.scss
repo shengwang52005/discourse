@@ -1,8 +1,6 @@
 @import "common/foundation/mixins";
 
 .full-page-chat {
-  overflow: hidden; //prevents double scroll
-
   .channels-list {
     overflow-y: overlay;
     padding-bottom: 6rem;
@@ -23,6 +21,24 @@
       .channel-title {
         color: var(--quaternary);
         font-size: var(--font-down-1);
+      }
+    }
+
+    .chat-channel-row {
+      &.--threads {
+        color: var(--primary);
+        padding-inline: 1.5rem;
+        font-size: var(--font-up-1-rem);
+        border: 0;
+
+        .chat-channel-title {
+          gap: 0.5rem;
+        }
+
+        .c-unread-indicator {
+          width: 8px;
+          height: 8px;
+        }
       }
     }
 
