@@ -3649,12 +3649,12 @@ RSpec.describe Guardian do
     end
 
     it "returns false when user satisfies trust level but tries to wiki someone else's post" do
-      SiteSetting.self_wiki_allowed_groups = Group::AUTO_GROUPS[:trust_level_2]
+      SiteSetting.min_trust_to_allow_self_wiki = 2
       expect(Guardian.new(trust_level_2).can_wiki?(post)).to be_falsey
     end
 
     it "returns true when user satisfies trust level and owns the post" do
-      SiteSetting.self_wiki_allowed_groups = Group::AUTO_GROUPS[:trust_level_2]
+      SiteSetting.min_trust_to_allow_self_wiki = 2
       own_post = Fabricate(:post, user: trust_level_2)
       expect(Guardian.new(trust_level_2).can_wiki?(own_post)).to be_truthy
     end
