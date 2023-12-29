@@ -4100,6 +4100,7 @@ en:
         this_month: "Month"
         this_week: "Week"
         today: "Today"
+        custom: "Custom"
 
     browser_update: 'Unfortunately, <a href="https://www.discourse.org/faq/#browser">your browser is unsupported</a>. Please <a href="https://browsehappy.com">switch to a supported browser</a> to view rich content, log in and reply.'
 

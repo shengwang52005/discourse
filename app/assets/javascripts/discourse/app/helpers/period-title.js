@@ -7,6 +7,7 @@ const TITLE_SUBS = {
   quarterly: "this_quarter",
   monthly: "this_month",
   daily: "today",
+  custom: "custom",
 };
 
 export default function periodTitle(period, { showDateRange, fullDay } = {}) {

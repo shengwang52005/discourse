@@ -9,7 +9,13 @@ export default Mixin.create({
   init() {
     this._super(...arguments);
 
-    this.availablePeriods = ["yearly", "quarterly", "monthly", "weekly"];
+    this.availablePeriods = [
+      "yearly",
+      "quarterly",
+      "monthly",
+      "weekly",
+      "custom",
+    ];
   },
 
   @discourseComputed("period")
@@ -52,7 +58,12 @@ export default Mixin.create({
 
   actions: {
     changePeriod(period) {
-      DiscourseURL.routeTo(this._reportsForPeriodURL(period));
+      if (period === "custom") {
+        // handle custom date range
+        // console.log("custom date range");
+      } else {
+        DiscourseURL.routeTo(this._reportsForPeriodURL(period));
+      }
     },
   },
 });
