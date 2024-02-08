@@ -63,12 +63,12 @@ describe Jobs::Chat::ProcessMessage do
       end
 
       shared_examples "channel-wide mentions" do
-        it "returns an empty list when the message doesn't include a channel mention" do
-          msg = build_cooked_msg(mention.gsub("@", ""), user_1)
+        it "doesn't create notifications when the message doesn't include a channel mention" do
+          msg = build_cooked_msg(mention.gsub("@#{user_2}", ""), user_1)
 
-          to_notify = Chat::Notifier.new(msg, msg.created_at).notify_new
+          Chat::Notifier.new(msg, msg.created_at).notify_new
 
-          expect(to_notify[list_key]).to be_empty
+          expect(Notification.count).to be(0)
         end
 
         it "will never include someone who is not accepting channel-wide notifications" do
@@ -182,6 +182,7 @@ describe Jobs::Chat::ProcessMessage do
               message: "hello @all",
             )
 
+            # andrei fixme this actually goes to the edit messages rspec context
             Chat::Notifier.new(msg, msg.created_at).notify_edit
 
             notifications = Notification.where(user: user_2)
