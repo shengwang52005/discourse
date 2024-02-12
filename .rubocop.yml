@@ -20,6 +20,10 @@ Discourse/Plugins/NamespaceMethods:
   Include:
     - "plugins/**/*"
 
+Discourse/Plugins/NamespaceConstants:
+  Include:
+    - "plugins/**/*"
+
 Lint/Debugger:
   Exclude:
     - script/**/*
