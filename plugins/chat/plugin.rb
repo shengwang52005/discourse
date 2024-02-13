@@ -36,7 +36,6 @@ module ::Chat
     chat_channel_retention_days: :dismissed_channel_retention_reminder,
     chat_dm_retention_days: :dismissed_dm_retention_reminder,
   }
-  CHAT_NOTIFICATION_TYPES = [Notification.types[:chat_mention], Notification.types[:chat_message]]
 end
 
 require_relative "lib/chat/engine"
@@ -335,7 +334,7 @@ after_initialize do
 
   register_push_notification_filter do |user, payload|
     if user.user_option.only_chat_push_notifications && user.user_option.chat_enabled
-      Chat::CHAT_NOTIFICATION_TYPES.include?(payload[:notification_type])
+      payload[:notification_type].in?(::Notification.types.values_at(:chat_mention, :chat_message))
     else
       true
     end
