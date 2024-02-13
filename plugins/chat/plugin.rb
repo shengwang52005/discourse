@@ -32,6 +32,11 @@ GlobalSetting.add_default(:allow_unsecure_chat_uploads, false)
 
 module ::Chat
   PLUGIN_NAME = "chat"
+  RETENTION_SETTINGS_TO_USER_OPTION_FIELDS = {
+    chat_channel_retention_days: :dismissed_channel_retention_reminder,
+    chat_dm_retention_days: :dismissed_dm_retention_reminder,
+  }
+  CHAT_NOTIFICATION_TYPES = [Notification.types[:chat_mention], Notification.types[:chat_message]]
 end
 
 require_relative "lib/chat/engine"
@@ -260,12 +265,8 @@ after_initialize do
     include_condition: -> { SiteSetting.chat_enabled && SiteSetting.create_thumbnails },
   ) { object.thumbnail }
 
-  RETENTION_SETTINGS_TO_USER_OPTION_FIELDS = {
-    chat_channel_retention_days: :dismissed_channel_retention_reminder,
-    chat_dm_retention_days: :dismissed_dm_retention_reminder,
-  }
   on(:site_setting_changed) do |name, old_value, new_value|
-    user_option_field = RETENTION_SETTINGS_TO_USER_OPTION_FIELDS[name.to_sym]
+    user_option_field = Chat::RETENTION_SETTINGS_TO_USER_OPTION_FIELDS[name.to_sym]
     begin
       if user_option_field && old_value != new_value && !new_value.zero?
         UserOption.where(user_option_field => true).update_all(user_option_field => false)
@@ -332,10 +333,9 @@ after_initialize do
     nil
   end
 
-  CHAT_NOTIFICATION_TYPES = [Notification.types[:chat_mention], Notification.types[:chat_message]]
   register_push_notification_filter do |user, payload|
     if user.user_option.only_chat_push_notifications && user.user_option.chat_enabled
-      CHAT_NOTIFICATION_TYPES.include?(payload[:notification_type])
+      Chat::CHAT_NOTIFICATION_TYPES.include?(payload[:notification_type])
     else
       true
     end

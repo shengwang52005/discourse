@@ -49,6 +49,7 @@ after_initialize do
     ../lib/discourse_narrative_bot/quote_generator.rb
     ../lib/discourse_narrative_bot/magic_8_ball.rb
     ../lib/discourse_narrative_bot/welcome_post_type_site_setting.rb
+    ../lib/discourse_narrative_bot/post_guardian_extension.rb
   ].each { |path| load File.expand_path(path, __FILE__) }
 
   RailsMultisite::ConnectionManagement.safe_each_connection do
@@ -315,16 +316,5 @@ after_initialize do
     end
   end
 
-  PostGuardian.class_eval do
-    alias_method :existing_can_create_post?, :can_create_post?
-
-    def can_create_post?(parent)
-      if SiteSetting.discourse_narrative_bot_enabled && parent.try(:subtype) == "system_message" &&
-           parent.try(:user) == ::DiscourseNarrativeBot::Base.new.discobot_user
-        return true
-      end
-
-      existing_can_create_post?(parent)
-    end
-  end
+  PostGuardian.prepend(DiscourseNarrativeBot::PostGuardianExtension)
 end
