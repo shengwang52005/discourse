@@ -21,7 +21,7 @@ if Rails.env == "development"
   Rails.configuration.autoload_paths << File.expand_path("../autoload/jobs", __FILE__)
 end
 
-require_relative "lib/discourse_narrative_bot/welcome_post_type_site_setting.rb"
+require_relative "lib/discourse_narrative_bot/welcome_post_type_site_setting"
 register_asset "stylesheets/discourse-narrative-bot.scss"
 
 after_initialize do
@@ -32,25 +32,23 @@ after_initialize do
 
   Mime::Type.register "image/svg+xml", :svg
 
-  %w[
-    ../autoload/jobs/regular/bot_input.rb
-    ../autoload/jobs/regular/narrative_timeout.rb
-    ../autoload/jobs/regular/narrative_init.rb
-    ../autoload/jobs/regular/send_default_welcome_message.rb
-    ../autoload/jobs/onceoff/discourse_narrative_bot/grant_badges.rb
-    ../autoload/jobs/onceoff/discourse_narrative_bot/remap_old_bot_images.rb
-    ../lib/discourse_narrative_bot/actions.rb
-    ../lib/discourse_narrative_bot/base.rb
-    ../lib/discourse_narrative_bot/new_user_narrative.rb
-    ../lib/discourse_narrative_bot/advanced_user_narrative.rb
-    ../lib/discourse_narrative_bot/track_selector.rb
-    ../lib/discourse_narrative_bot/certificate_generator.rb
-    ../lib/discourse_narrative_bot/dice.rb
-    ../lib/discourse_narrative_bot/quote_generator.rb
-    ../lib/discourse_narrative_bot/magic_8_ball.rb
-    ../lib/discourse_narrative_bot/welcome_post_type_site_setting.rb
-    ../lib/discourse_narrative_bot/post_guardian_extension.rb
-  ].each { |path| load File.expand_path(path, __FILE__) }
+  require_relative "autoload/jobs/regular/bot_input"
+  require_relative "autoload/jobs/regular/narrative_timeout"
+  require_relative "autoload/jobs/regular/narrative_init"
+  require_relative "autoload/jobs/regular/send_default_welcome_message"
+  require_relative "autoload/jobs/onceoff/discourse_narrative_bot/grant_badges"
+  require_relative "autoload/jobs/onceoff/discourse_narrative_bot/remap_old_bot_images"
+  require_relative "lib/discourse_narrative_bot/actions"
+  require_relative "lib/discourse_narrative_bot/base"
+  require_relative "lib/discourse_narrative_bot/new_user_narrative"
+  require_relative "lib/discourse_narrative_bot/advanced_user_narrative"
+  require_relative "lib/discourse_narrative_bot/track_selector"
+  require_relative "lib/discourse_narrative_bot/certificate_generator"
+  require_relative "lib/discourse_narrative_bot/dice"
+  require_relative "lib/discourse_narrative_bot/quote_generator"
+  require_relative "lib/discourse_narrative_bot/magic_8_ball"
+  require_relative "lib/discourse_narrative_bot/welcome_post_type_site_setting"
+  require_relative "lib/discourse_narrative_bot/post_guardian_extension"
 
   RailsMultisite::ConnectionManagement.safe_each_connection do
     if SiteSetting.discourse_narrative_bot_enabled
