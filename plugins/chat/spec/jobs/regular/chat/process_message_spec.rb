@@ -91,14 +91,14 @@ describe Jobs::Chat::ProcessMessage do
           expect(Notification.count).to be(0)
         end
 
-        it "will publish a mention warning" do
+        it "publishes a mention warning" do
           channel.update!(allow_channel_wide_mentions: false)
           msg = build_cooked_msg(mention, user_1)
           Fabricate(mention_type, chat_message: msg)
 
           messages =
             MessageBus.track_publish("/chat/#{channel.id}") do
-              to_notify = Chat::Notifier.new(msg, msg.created_at).notify_new
+              Chat::Notifier.new(msg, msg.created_at).notify_new
             end
 
           global_mentions_disabled_message = messages.first
@@ -109,13 +109,14 @@ describe Jobs::Chat::ProcessMessage do
           )
         end
 
-        it "includes all members of a channel except the sender" do
+        it "notifies all members of a channel except the sender" do
           msg = build_cooked_msg(mention, user_1)
           Fabricate(mention_type, chat_message: msg)
 
-          to_notify = Chat::Notifier.new(msg, msg.created_at).notify_new
+          Chat::Notifier.new(msg, msg.created_at).notify_new
 
-          expect(to_notify[list_key]).to contain_exactly(user_2.id)
+          expect(Notification.where(user: user_1).count).to be(0)
+          expect(Notification.where(user: user_2).count).to be(1)
         end
       end
 
