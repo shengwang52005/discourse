@@ -28,6 +28,10 @@ Discourse/Plugins/UseRequireRelative:
   Include:
     - "plugins/**/*"
 
+Discourse/Plugins/NoMonkeyPatching:
+  Include:
+    - "plugins/**/*"
+
 Lint/Debugger:
   Exclude:
     - script/**/*
