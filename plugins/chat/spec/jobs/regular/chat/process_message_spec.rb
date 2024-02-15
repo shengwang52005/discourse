@@ -121,11 +121,12 @@ describe Jobs::Chat::ProcessMessage do
       end
 
       shared_examples "ensure only channel members are notified" do
-        it "will never include someone outside the channel" do
-          user3 = Fabricate(:user)
-          @chat_group.add(user3)
+        it "will never notify someone outside the channel" do
+          user_3 = Fabricate(:user)
+          @chat_group.add(user_3)
           another_channel = Fabricate(:category_channel)
-          Fabricate(:user_chat_channel_membership, chat_channel: another_channel, user: user3)
+          Fabricate(:user_chat_channel_membership, chat_channel: another_channel, user: user_3)
+
           msg = build_cooked_msg(mention, user_1)
           if mention_type == :group_chat_mention
             Fabricate(mention_type, group: group, chat_message: msg)
@@ -133,12 +134,12 @@ describe Jobs::Chat::ProcessMessage do
             Fabricate(mention_type, chat_message: msg)
           end
 
-          to_notify = Chat::Notifier.new(msg, msg.created_at).notify_new
+          Chat::Notifier.new(msg, msg.created_at).notify_new
 
-          expect(to_notify[list_key]).to contain_exactly(user_2.id)
+          expect(Notification.where(user: user_3).count).to be(0)
         end
 
-        it "will never include someone not following the channel anymore" do
+        it "will never notify someone not following the channel anymore" do
           user3 = Fabricate(:user)
           @chat_group.add(user3)
           Fabricate(
@@ -159,7 +160,7 @@ describe Jobs::Chat::ProcessMessage do
           expect(to_notify[list_key]).to contain_exactly(user_2.id)
         end
 
-        it "will never include someone who is suspended" do
+        it "will never notify someone who is suspended" do
           user3 = Fabricate(:user, suspended_till: 2.years.from_now)
           @chat_group.add(user3)
           Fabricate(
