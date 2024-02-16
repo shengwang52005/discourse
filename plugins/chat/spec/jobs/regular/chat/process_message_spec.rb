@@ -1351,12 +1351,13 @@ describe Jobs::Chat::ProcessMessage do
           )
         end
 
+        let(:message) { create_chat_message }
+
+        before { Fabricate(:group_chat_mention, group: @chat_group, chat_message: message) }
+
         include_examples "creates different notifications with basic data"
 
         it "includes here mention specific data to core notifications" do
-          message = create_chat_message
-          Fabricate(:group_chat_mention, group: @chat_group, chat_message: message)
-
           created_notification =
             track_core_notification(message: message, to_notify_ids_map: to_notify_ids_map)
           data_hash = created_notification.data_hash
@@ -1366,9 +1367,6 @@ describe Jobs::Chat::ProcessMessage do
         end
 
         it "includes here mention specific data to desktop notifications" do
-          message = create_chat_message
-          Fabricate(:group_chat_mention, group: @chat_group, chat_message: message)
-
           desktop_notification =
             run_job_and_get_first_desktop_notification(
               message: message,
