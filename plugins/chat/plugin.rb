@@ -73,7 +73,7 @@ after_initialize do
     Group.prepend Chat::GroupExtension
     Jobs::UserEmail.prepend Chat::UserEmailExtension
     Plugin::Instance.prepend Chat::PluginInstanceExtension
-    Jobs::ExportCsvFile.class_eval { prepend Chat::MessagesExporter }
+    Jobs::ExportCsvFile.prepend Chat::MessagesExporter
     WebHook.prepend Chat::OutgoingWebHookExtension
   end
 
