@@ -44,7 +44,7 @@ after_initialize do
   require_relative "lib/polls_validator"
   require_relative "lib/post_validator"
   require_relative "lib/post_extension"
-  require_relative "lib/user_validator"
+  require_relative "lib/user_extension"
 
   DiscoursePoll::Engine.routes.draw do
     put "/vote" => "polls#vote"
